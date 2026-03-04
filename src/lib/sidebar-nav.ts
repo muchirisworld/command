@@ -1,4 +1,4 @@
-import { Box, HomeIcon } from "@hugeicons/core-free-icons";
+import { Box, HomeIcon, PackageReceiveIcon, Settings01Icon } from "@hugeicons/core-free-icons";
 import type { IconSvgElement } from "@hugeicons/react";
 import { useRouterState } from "@tanstack/react-router";
 import type { FileRouteTypes } from "@/routeTree.gen";
@@ -30,7 +30,7 @@ type SidebarNavItemConfig =
 			kind: "hidden";
 	  };
 
-export const dashboardNavConfig: Record<DashboardRoute, SidebarNavItemConfig> =
+export const dashboardNavConfig: Record<string, SidebarNavItemConfig> =
 	{
 		"/dashboard": {
 			kind: "item",
@@ -38,11 +38,23 @@ export const dashboardNavConfig: Record<DashboardRoute, SidebarNavItemConfig> =
 			url: "/dashboard",
 			icon: HomeIcon,
 		},
-		"/dashboard/catalog": {
+		"/dashboard/catalog/products": {
 			kind: "item",
-			title: "Catalog",
-			url: "/dashboard/catalog",
+			title: "Products",
+			url: "/dashboard/catalog/products",
 			icon: Box,
+		},
+		"/dashboard/inventory/receive": {
+			kind: "item",
+			title: "Receive Stock",
+			url: "/dashboard/inventory/receive",
+			icon: PackageReceiveIcon,
+		},
+		"/dashboard/settings": {
+			kind: "item",
+			title: "Settings",
+			url: "/dashboard/settings",
+			icon: Settings01Icon,
 		},
 	};
 
@@ -59,6 +71,6 @@ export function useSidebarItems(): Array<SidebarNavItem> {
 		.filter(([_, x]) => x.kind === "item")
 		.map(([route, item]) => ({
 			...item,
-			isActive: location === route,
+			isActive: location === route || location.startsWith(`${route}/`),
 		}));
 }

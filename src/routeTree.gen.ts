@@ -13,11 +13,18 @@ import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as AuthRouteRouteImport } from './routes/auth/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
+import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settings'
 import { Route as DashboardCatalogIndexRouteImport } from './routes/dashboard/catalog/index'
 import { Route as AuthSignUpIndexRouteImport } from './routes/auth/sign-up/index'
 import { Route as AuthSignInIndexRouteImport } from './routes/auth/sign-in/index'
 import { Route as AuthCreateOrgIndexRouteImport } from './routes/auth/create-org/index'
+import { Route as DashboardInventoryReceiveRouteImport } from './routes/dashboard/inventory/receive'
+import { Route as DashboardCatalogProductsIndexRouteImport } from './routes/dashboard/catalog/products/index'
+import { Route as DashboardCatalogProductsNewRouteImport } from './routes/dashboard/catalog/products/new'
+import { Route as DashboardCatalogProductsProductIdRouteImport } from './routes/dashboard/catalog/products/$productId'
 import { Route as AuthSignInTasksChooseOrganizationIndexRouteImport } from './routes/auth/sign-in/tasks/choose-organization/index'
+import { Route as DashboardInventoryVariantsVariantIdStockRouteImport } from './routes/dashboard/inventory/variants/$variantId/stock'
+import { Route as DashboardCatalogProductsProductIdVariantsNewRouteImport } from './routes/dashboard/catalog/products/$productId/variants/new'
 
 const DashboardRouteRoute = DashboardRouteRouteImport.update({
   id: '/dashboard',
@@ -37,6 +44,11 @@ const IndexRoute = IndexRouteImport.update({
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
 const DashboardCatalogIndexRoute = DashboardCatalogIndexRouteImport.update({
@@ -59,45 +71,102 @@ const AuthCreateOrgIndexRoute = AuthCreateOrgIndexRouteImport.update({
   path: '/create-org/',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const DashboardInventoryReceiveRoute =
+  DashboardInventoryReceiveRouteImport.update({
+    id: '/inventory/receive',
+    path: '/inventory/receive',
+    getParentRoute: () => DashboardRouteRoute,
+  } as any)
+const DashboardCatalogProductsIndexRoute =
+  DashboardCatalogProductsIndexRouteImport.update({
+    id: '/catalog/products/',
+    path: '/catalog/products/',
+    getParentRoute: () => DashboardRouteRoute,
+  } as any)
+const DashboardCatalogProductsNewRoute =
+  DashboardCatalogProductsNewRouteImport.update({
+    id: '/catalog/products/new',
+    path: '/catalog/products/new',
+    getParentRoute: () => DashboardRouteRoute,
+  } as any)
+const DashboardCatalogProductsProductIdRoute =
+  DashboardCatalogProductsProductIdRouteImport.update({
+    id: '/catalog/products/$productId',
+    path: '/catalog/products/$productId',
+    getParentRoute: () => DashboardRouteRoute,
+  } as any)
 const AuthSignInTasksChooseOrganizationIndexRoute =
   AuthSignInTasksChooseOrganizationIndexRouteImport.update({
     id: '/sign-in/tasks/choose-organization/',
     path: '/sign-in/tasks/choose-organization/',
     getParentRoute: () => AuthRouteRoute,
   } as any)
+const DashboardInventoryVariantsVariantIdStockRoute =
+  DashboardInventoryVariantsVariantIdStockRouteImport.update({
+    id: '/inventory/variants/$variantId/stock',
+    path: '/inventory/variants/$variantId/stock',
+    getParentRoute: () => DashboardRouteRoute,
+  } as any)
+const DashboardCatalogProductsProductIdVariantsNewRoute =
+  DashboardCatalogProductsProductIdVariantsNewRouteImport.update({
+    id: '/variants/new',
+    path: '/variants/new',
+    getParentRoute: () => DashboardCatalogProductsProductIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
   '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/inventory/receive': typeof DashboardInventoryReceiveRoute
   '/auth/create-org': typeof AuthCreateOrgIndexRoute
   '/auth/sign-in': typeof AuthSignInIndexRoute
   '/auth/sign-up': typeof AuthSignUpIndexRoute
   '/dashboard/catalog': typeof DashboardCatalogIndexRoute
+  '/dashboard/catalog/products/$productId': typeof DashboardCatalogProductsProductIdRouteWithChildren
+  '/dashboard/catalog/products/new': typeof DashboardCatalogProductsNewRoute
+  '/dashboard/catalog/products': typeof DashboardCatalogProductsIndexRoute
+  '/dashboard/inventory/variants/$variantId/stock': typeof DashboardInventoryVariantsVariantIdStockRoute
   '/auth/sign-in/tasks/choose-organization': typeof AuthSignInTasksChooseOrganizationIndexRoute
+  '/dashboard/catalog/products/$productId/variants/new': typeof DashboardCatalogProductsProductIdVariantsNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
+  '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/inventory/receive': typeof DashboardInventoryReceiveRoute
   '/auth/create-org': typeof AuthCreateOrgIndexRoute
   '/auth/sign-in': typeof AuthSignInIndexRoute
   '/auth/sign-up': typeof AuthSignUpIndexRoute
   '/dashboard/catalog': typeof DashboardCatalogIndexRoute
+  '/dashboard/catalog/products/$productId': typeof DashboardCatalogProductsProductIdRouteWithChildren
+  '/dashboard/catalog/products/new': typeof DashboardCatalogProductsNewRoute
+  '/dashboard/catalog/products': typeof DashboardCatalogProductsIndexRoute
+  '/dashboard/inventory/variants/$variantId/stock': typeof DashboardInventoryVariantsVariantIdStockRoute
   '/auth/sign-in/tasks/choose-organization': typeof AuthSignInTasksChooseOrganizationIndexRoute
+  '/dashboard/catalog/products/$productId/variants/new': typeof DashboardCatalogProductsProductIdVariantsNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
   '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/inventory/receive': typeof DashboardInventoryReceiveRoute
   '/auth/create-org/': typeof AuthCreateOrgIndexRoute
   '/auth/sign-in/': typeof AuthSignInIndexRoute
   '/auth/sign-up/': typeof AuthSignUpIndexRoute
   '/dashboard/catalog/': typeof DashboardCatalogIndexRoute
+  '/dashboard/catalog/products/$productId': typeof DashboardCatalogProductsProductIdRouteWithChildren
+  '/dashboard/catalog/products/new': typeof DashboardCatalogProductsNewRoute
+  '/dashboard/catalog/products/': typeof DashboardCatalogProductsIndexRoute
+  '/dashboard/inventory/variants/$variantId/stock': typeof DashboardInventoryVariantsVariantIdStockRoute
   '/auth/sign-in/tasks/choose-organization/': typeof AuthSignInTasksChooseOrganizationIndexRoute
+  '/dashboard/catalog/products/$productId/variants/new': typeof DashboardCatalogProductsProductIdVariantsNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -105,33 +174,54 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/dashboard'
+    | '/dashboard/settings'
     | '/dashboard/'
+    | '/dashboard/inventory/receive'
     | '/auth/create-org'
     | '/auth/sign-in'
     | '/auth/sign-up'
     | '/dashboard/catalog'
+    | '/dashboard/catalog/products/$productId'
+    | '/dashboard/catalog/products/new'
+    | '/dashboard/catalog/products'
+    | '/dashboard/inventory/variants/$variantId/stock'
     | '/auth/sign-in/tasks/choose-organization'
+    | '/dashboard/catalog/products/$productId/variants/new'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
+    | '/dashboard/settings'
     | '/dashboard'
+    | '/dashboard/inventory/receive'
     | '/auth/create-org'
     | '/auth/sign-in'
     | '/auth/sign-up'
     | '/dashboard/catalog'
+    | '/dashboard/catalog/products/$productId'
+    | '/dashboard/catalog/products/new'
+    | '/dashboard/catalog/products'
+    | '/dashboard/inventory/variants/$variantId/stock'
     | '/auth/sign-in/tasks/choose-organization'
+    | '/dashboard/catalog/products/$productId/variants/new'
   id:
     | '__root__'
     | '/'
     | '/auth'
     | '/dashboard'
+    | '/dashboard/settings'
     | '/dashboard/'
+    | '/dashboard/inventory/receive'
     | '/auth/create-org/'
     | '/auth/sign-in/'
     | '/auth/sign-up/'
     | '/dashboard/catalog/'
+    | '/dashboard/catalog/products/$productId'
+    | '/dashboard/catalog/products/new'
+    | '/dashboard/catalog/products/'
+    | '/dashboard/inventory/variants/$variantId/stock'
     | '/auth/sign-in/tasks/choose-organization/'
+    | '/dashboard/catalog/products/$productId/variants/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -170,6 +260,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
+    '/dashboard/settings': {
+      id: '/dashboard/settings'
+      path: '/settings'
+      fullPath: '/dashboard/settings'
+      preLoaderRoute: typeof DashboardSettingsRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
     '/dashboard/catalog/': {
       id: '/dashboard/catalog/'
       path: '/catalog'
@@ -198,12 +295,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthCreateOrgIndexRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/dashboard/inventory/receive': {
+      id: '/dashboard/inventory/receive'
+      path: '/inventory/receive'
+      fullPath: '/dashboard/inventory/receive'
+      preLoaderRoute: typeof DashboardInventoryReceiveRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/catalog/products/': {
+      id: '/dashboard/catalog/products/'
+      path: '/catalog/products'
+      fullPath: '/dashboard/catalog/products'
+      preLoaderRoute: typeof DashboardCatalogProductsIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/catalog/products/new': {
+      id: '/dashboard/catalog/products/new'
+      path: '/catalog/products/new'
+      fullPath: '/dashboard/catalog/products/new'
+      preLoaderRoute: typeof DashboardCatalogProductsNewRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/catalog/products/$productId': {
+      id: '/dashboard/catalog/products/$productId'
+      path: '/catalog/products/$productId'
+      fullPath: '/dashboard/catalog/products/$productId'
+      preLoaderRoute: typeof DashboardCatalogProductsProductIdRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
     '/auth/sign-in/tasks/choose-organization/': {
       id: '/auth/sign-in/tasks/choose-organization/'
       path: '/sign-in/tasks/choose-organization'
       fullPath: '/auth/sign-in/tasks/choose-organization'
       preLoaderRoute: typeof AuthSignInTasksChooseOrganizationIndexRouteImport
       parentRoute: typeof AuthRouteRoute
+    }
+    '/dashboard/inventory/variants/$variantId/stock': {
+      id: '/dashboard/inventory/variants/$variantId/stock'
+      path: '/inventory/variants/$variantId/stock'
+      fullPath: '/dashboard/inventory/variants/$variantId/stock'
+      preLoaderRoute: typeof DashboardInventoryVariantsVariantIdStockRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/catalog/products/$productId/variants/new': {
+      id: '/dashboard/catalog/products/$productId/variants/new'
+      path: '/variants/new'
+      fullPath: '/dashboard/catalog/products/$productId/variants/new'
+      preLoaderRoute: typeof DashboardCatalogProductsProductIdVariantsNewRouteImport
+      parentRoute: typeof DashboardCatalogProductsProductIdRoute
     }
   }
 }
@@ -227,14 +366,43 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
   AuthRouteRouteChildren,
 )
 
+interface DashboardCatalogProductsProductIdRouteChildren {
+  DashboardCatalogProductsProductIdVariantsNewRoute: typeof DashboardCatalogProductsProductIdVariantsNewRoute
+}
+
+const DashboardCatalogProductsProductIdRouteChildren: DashboardCatalogProductsProductIdRouteChildren =
+  {
+    DashboardCatalogProductsProductIdVariantsNewRoute:
+      DashboardCatalogProductsProductIdVariantsNewRoute,
+  }
+
+const DashboardCatalogProductsProductIdRouteWithChildren =
+  DashboardCatalogProductsProductIdRoute._addFileChildren(
+    DashboardCatalogProductsProductIdRouteChildren,
+  )
+
 interface DashboardRouteRouteChildren {
+  DashboardSettingsRoute: typeof DashboardSettingsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardInventoryReceiveRoute: typeof DashboardInventoryReceiveRoute
   DashboardCatalogIndexRoute: typeof DashboardCatalogIndexRoute
+  DashboardCatalogProductsProductIdRoute: typeof DashboardCatalogProductsProductIdRouteWithChildren
+  DashboardCatalogProductsNewRoute: typeof DashboardCatalogProductsNewRoute
+  DashboardCatalogProductsIndexRoute: typeof DashboardCatalogProductsIndexRoute
+  DashboardInventoryVariantsVariantIdStockRoute: typeof DashboardInventoryVariantsVariantIdStockRoute
 }
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
+  DashboardSettingsRoute: DashboardSettingsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
+  DashboardInventoryReceiveRoute: DashboardInventoryReceiveRoute,
   DashboardCatalogIndexRoute: DashboardCatalogIndexRoute,
+  DashboardCatalogProductsProductIdRoute:
+    DashboardCatalogProductsProductIdRouteWithChildren,
+  DashboardCatalogProductsNewRoute: DashboardCatalogProductsNewRoute,
+  DashboardCatalogProductsIndexRoute: DashboardCatalogProductsIndexRoute,
+  DashboardInventoryVariantsVariantIdStockRoute:
+    DashboardInventoryVariantsVariantIdStockRoute,
 }
 
 const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
