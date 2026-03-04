@@ -1,0 +1,155 @@
+import { useAuth } from "@clerk/tanstack-react-start";
+import {
+	Bell,
+	Card,
+	LogoutIcon,
+	SettingsIcon,
+	UserIcon,
+} from "@hugeicons/core-free-icons";
+import type { IconSvgElement } from "@hugeicons/react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { useEffect, useId } from "react";
+import {
+	DropdownMenuContent,
+	DropdownMenuGroup,
+	DropdownMenuItem,
+	DropdownMenuPortal,
+	DropdownMenuSeparator,
+	DropdownMenuSub,
+	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import useThemeStore from "../../lib/themeStore";
+
+type ProfileDropdownItem = {
+	icon: IconSvgElement;
+	name: string;
+	action: () => void;
+};
+
+const profileDropdownItems: Array<ProfileDropdownItem> = [
+	{
+		icon: UserIcon,
+		name: "Profile",
+		action: () => {
+			console.log("Profile clicked");
+		},
+	},
+	{
+		icon: SettingsIcon,
+		name: "Settings",
+		action: () => {
+			console.log("Settings clicked");
+		},
+	},
+	{
+		icon: Card,
+		name: "Billing",
+		action: () => {
+			console.log("Billing clicked");
+		},
+	},
+	{
+		icon: Bell,
+		name: "Notifications",
+		action: () => {
+			console.log("Notification clicked");
+		},
+	},
+];
+
+export function UserProfile() {
+	const { signOut } = useAuth();
+	const theme = useThemeStore((s) => s.theme);
+	const setTheme = useThemeStore((s) => s.setTheme);
+
+	const lightId = useId();
+	const darkId = useId();
+	const systemId = useId();
+
+	useEffect(() => {
+		// initialize theme on mount (reads localStorage and applies class)
+		try {
+			useThemeStore.getState().init();
+		} catch (_e) {}
+	}, []);
+
+	const handleThemeChange = (value: unknown) => {
+		const strValue = String(value);
+		switch (strValue) {
+			case "1":
+				setTheme("light");
+				break;
+			case "2":
+				setTheme("dark");
+				break;
+			case "3":
+				setTheme("system");
+				break;
+			default:
+				setTheme("light");
+		}
+	};
+
+	const radioValue = theme === "light" ? "1" : theme === "dark" ? "2" : "3";
+
+	return (
+		<DropdownMenuContent className={"w-full"} side="right">
+			<DropdownMenuGroup>
+				{profileDropdownItems.map((item) => (
+					<DropdownMenuItem
+						key={item.name}
+						className="flex items-center px-4 py-2 cursor-pointer"
+						onClick={item.action}
+					>
+						<HugeiconsIcon icon={item.icon} className="w-5 h-5 mr-2" />
+						<span>{item.name}</span>
+					</DropdownMenuItem>
+				))}
+				<DropdownMenuSeparator />
+				<DropdownMenuSub>
+					<DropdownMenuSubTrigger>
+						<HugeiconsIcon icon={SettingsIcon} className="w-5 h-5 mr-2" />
+						<span>Theme</span>
+					</DropdownMenuSubTrigger>
+					<DropdownMenuPortal>
+						<DropdownMenuSubContent>
+							<RadioGroup
+								className={"gap-0"}
+								value={radioValue}
+								onValueChange={handleThemeChange}
+							>
+								<DropdownMenuItem className="flex items-center hover:bg-muted">
+									<RadioGroupItem id={lightId} value="1" />
+									<Label htmlFor={lightId}>Light</Label>
+								</DropdownMenuItem>
+								<DropdownMenuItem className="flex items-center hover:bg-muted">
+									<RadioGroupItem id={darkId} value="2" />
+									<Label htmlFor={darkId}>Dark</Label>
+								</DropdownMenuItem>
+								<DropdownMenuItem className="flex items-center hover:bg-muted">
+									<RadioGroupItem id={systemId} value="3" />
+									<Label htmlFor={systemId}>System</Label>
+								</DropdownMenuItem>
+							</RadioGroup>
+						</DropdownMenuSubContent>
+					</DropdownMenuPortal>
+				</DropdownMenuSub>
+			</DropdownMenuGroup>
+
+			<DropdownMenuSeparator />
+			<DropdownMenuGroup>
+				<DropdownMenuItem
+					className="flex items-center px-4 py-2 cursor-pointer"
+					variant="destructive"
+					onClick={() => signOut()}
+				>
+					<HugeiconsIcon icon={LogoutIcon} className="w-5 h-5 mr-2" />
+					<span>Logout</span>
+				</DropdownMenuItem>
+			</DropdownMenuGroup>
+		</DropdownMenuContent>
+	);
+}
