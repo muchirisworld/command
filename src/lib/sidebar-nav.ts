@@ -75,6 +75,6 @@ export function useSidebarItems(): Array<SidebarNavItem> {
 		.filter(([_, x]) => x.kind === "item")
 		.map(([route, item]) => ({
 			...item,
-			isActive: location === route || location.startsWith(`${route}/`),
+			isActive: location === route,
 		}));
 }
