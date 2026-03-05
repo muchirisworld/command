@@ -19,11 +19,6 @@ import {
 	SidebarMenuItem,
 	useSidebar,
 } from "@/components/ui/sidebar";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { useSidebarItems } from "@/lib/sidebar-nav";
 import { cn } from "@/lib/utils";
 import { UserProfile } from "../elements/user-profile";

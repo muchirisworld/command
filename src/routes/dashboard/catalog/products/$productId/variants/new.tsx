@@ -31,7 +31,7 @@ const variantSchema = z.object({
 	barcode: z.string(), // Use string to match defaultValues: ""
 	price: z.number().min(0, "Price must be positive"),
 	cost: z.number().min(0), // Use number to match defaultValues: 0
-	is_active: z.boolean().default(true),
+	is_active: z.boolean(),
 });
 
 function CreateVariantComponent() {
@@ -117,9 +117,10 @@ function CreateVariantComponent() {
 											onChange={(e) => field.handleChange(e.target.value)}
 											placeholder="e.g. JD-1L-001"
 										/>
-										{field.state.meta.errors ? (
+										{field.state.meta.errors?.length ? (
 											<p className="text-xs text-destructive">
-												{field.state.meta.errors}
+												{field.state.meta.errors[0]?.message ??
+													String(field.state.meta.errors[0])}
 											</p>
 										) : null}
 									</div>
