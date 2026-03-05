@@ -15,8 +15,9 @@ let systemThemeHandler: ((e: MediaQueryListEvent) => void) | null = null;
 const applyTheme = (theme: Theme) => {
 	if (typeof document === "undefined") return;
 	const root = document.documentElement;
-	const prefersDark =
-		window?.matchMedia?.("(prefers-color-scheme: dark)").matches;
+	const prefersDark = window?.matchMedia?.(
+		"(prefers-color-scheme: dark)",
+	).matches;
 	const dark = theme === "dark" || (theme === "system" && prefersDark);
 
 	if (dark) root.classList.add("dark");
