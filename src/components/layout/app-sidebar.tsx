@@ -39,15 +39,22 @@ const AppSidebar = () => {
 			<SidebarHeader>
 				<SidebarMenu>
 					<SidebarMenuItem>
-						<SidebarMenuButton className="cursor-pointer">
+						<div className={cn("flex items-center gap-2 px-2 py-2", !open && "justify-center px-0")}>
 							{open ? (
-								<OrganizationSwitcher />
+								<OrganizationSwitcher 
+									appearance={{
+										elements: {
+											rootBox: "w-full",
+											organizationSwitcherTrigger: "w-full justify-start px-2 py-1 border border-border bg-background hover:bg-muted transition-colors",
+										}
+									}}
+								/>
 							) : (
-								<div>
-									<HugeiconsIcon icon={Command} />
+								<div className="flex h-8 w-8 items-center justify-center rounded-none border border-border bg-background shadow-sm">
+									<HugeiconsIcon icon={Command} size={16} />
 								</div>
 							)}
-						</SidebarMenuButton>
+						</div>
 					</SidebarMenuItem>
 				</SidebarMenu>
 			</SidebarHeader>
@@ -57,29 +64,18 @@ const AppSidebar = () => {
 					<SidebarGroupContent>
 						<SidebarMenu>
 							{mainNavItems.map((item) => (
-								<Link to={item.url} key={item.title} className="mb-1">
-									<Tooltip key={item.title}>
-										<SidebarMenuItem>
-											<TooltipTrigger
-												className="w-full"
-												render={
-													<SidebarMenuButton
-														isActive={item.isActive}
-														className={`cursor-pointer border ${!item.isActive && "border-transparent"}`}
-													>
-														<HugeiconsIcon icon={item.icon} />
-														{open && <span className="">{item.title}</span>}
-													</SidebarMenuButton>
-												}
-											/>
-											{!open && (
-												<TooltipContent side="right">
-													{item.title}
-												</TooltipContent>
-											)}
-										</SidebarMenuItem>
-									</Tooltip>
-								</Link>
+								<SidebarMenuItem key={item.title}>
+									<Link to={item.url} className="w-full">
+										<SidebarMenuButton
+											isActive={item.isActive}
+											tooltip={item.title}
+											className="cursor-pointer"
+										>
+											<HugeiconsIcon icon={item.icon} />
+											<span>{item.title}</span>
+										</SidebarMenuButton>
+									</Link>
+								</SidebarMenuItem>
 							))}
 						</SidebarMenu>
 					</SidebarGroupContent>
@@ -89,37 +85,33 @@ const AppSidebar = () => {
 			<SidebarFooter>
 				<SidebarMenu>
 					<SidebarMenuItem>
-						{/* <UserButton /> */}
 						<DropdownMenu>
-							<DropdownMenuTrigger>
-								<SidebarMenuButton
-									className={cn(
-										"cursor-pointer border border-transparent hover:border-border",
-										open ? "py-6" : "p-0 m-0",
-									)}
-								>
-									<Avatar>
-										<AvatarImage
-											src={user?.imageUrl}
-											alt={user?.fullName || "User Avatar"}
-											className={"border rounded-xs"}
-										/>
-										<AvatarFallback className={"border rounded-xs"}>
-											{user?.fullName?.substring(0, 2).toUpperCase() || "U"}
-										</AvatarFallback>
-									</Avatar>
-									{open && (
-										<div className="flex flex-col justify-center items-start">
-											<span className="font-bold">
+							<DropdownMenuTrigger
+								render={
+									<SidebarMenuButton
+										size="lg"
+										className="cursor-pointer data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+									>
+										<Avatar className="h-8 w-8 rounded-none border">
+											<AvatarImage
+												src={user?.imageUrl}
+												alt={user?.fullName || "User Avatar"}
+											/>
+											<AvatarFallback className="rounded-none">
+												{user?.fullName?.substring(0, 2).toUpperCase() || "U"}
+											</AvatarFallback>
+										</Avatar>
+										<div className="grid flex-1 text-left text-sm leading-tight">
+											<span className="truncate font-semibold">
 												{user?.fullName || "User"}
 											</span>
-											<span className="text-xs text-muted-foreground">
+											<span className="truncate text-xs text-muted-foreground">
 												{user?.primaryEmailAddress?.emailAddress || "No Email"}
 											</span>
 										</div>
-									)}
-								</SidebarMenuButton>
-							</DropdownMenuTrigger>
+									</SidebarMenuButton>
+								}
+							/>
 							<UserProfile />
 						</DropdownMenu>
 					</SidebarMenuItem>

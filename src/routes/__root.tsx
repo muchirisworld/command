@@ -1,26 +1,16 @@
 import { shadcn } from '@clerk/themes'
 import { ClerkProvider } from '@clerk/tanstack-react-start'
-import { HeadContent, Outlet, Scripts, createRootRoute } from '@tanstack/react-router'
+import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
 
 import appCss from '../styles.css?url'
 import { NotFoundPage } from '@/components/elements/not-found'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import type { RouterContext } from '@/router'
 
-const getQueryClient = (() => {
-  let browserQueryClient: QueryClient | undefined
-  return () => {
-    if (typeof window === 'undefined') {
-      return new QueryClient()
-    }
-    if (!browserQueryClient) browserQueryClient = new QueryClient()
-    return browserQueryClient
-  }
-})()
-
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<RouterContext>()({
   head: () => ({
     meta: [
       {
@@ -31,7 +21,7 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'TanStack Start Starter',
+        title: 'Liquor OS Command',
       },
     ],
     links: [
@@ -42,12 +32,19 @@ export const Route = createRootRoute({
     ],
   }),
   notFoundComponent: NotFoundPage,
-  component: () => <Outlet />,
-  shellComponent: RootDocument,
+  component: RootComponent,
 })
 
+function RootComponent() {
+  return (
+    <RootDocument>
+      <Outlet />
+    </RootDocument>
+  )
+}
+
 function RootDocument({ children }: { children: React.ReactNode }) {
-  const queryClient = getQueryClient()
+  const { queryClient } = Route.useRouteContext()
 
   return (
     <ClerkProvider

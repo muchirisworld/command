@@ -10,17 +10,19 @@ import {
     CardDescription 
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { getProduct, archiveProduct, createConversion } from "@/lib/api-client";
+import { archiveProduct, createConversion } from "@/lib/api-client";
 import { toast } from "sonner";
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { productQueryOptions } from "@/lib/queries";
+import { useSuspenseQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/dashboard/catalog/products/$productId")({
     component: ProductDetailComponent,
-    loader: async ({ params }) => {
-        return await getProduct({ data: params.productId });
+    loader: async ({ params, context }) => {
+        await context.queryClient.ensureQueryData(productQueryOptions(params.productId));
     },
 });
 
@@ -31,18 +33,39 @@ const conversionSchema = z.object({
 });
 
 function ProductDetailComponent() {
-    const product = Route.useLoaderData();
+    const { productId } = Route.useParams();
+    const { data: product } = useSuspenseQuery(productQueryOptions(productId));
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
+
+    const archiveMutation = useMutation({
+        mutationFn: (id: string) => archiveProduct({ data: id }),
+        onSuccess: () => {
+            toast.success("Product archived");
+            queryClient.invalidateQueries({ queryKey: ['products'] });
+            navigate({ to: "/dashboard/catalog/products" });
+        },
+        onError: () => {
+            toast.error("Failed to archive product");
+        },
+    });
+
+    const conversionMutation = useMutation({
+        mutationFn: (data: { productId: string; unit_from: string; factor: number; precision: number }) => 
+            createConversion({ data }),
+        onSuccess: () => {
+            toast.success("Conversion rule added");
+            queryClient.invalidateQueries({ queryKey: ['products', productId] });
+            conversionForm.reset();
+        },
+        onError: () => {
+            toast.error("Failed to add conversion");
+        },
+    });
 
     const handleArchive = async () => {
         if (!confirm("Are you sure you want to archive this product?")) return;
-        try {
-            await archiveProduct({ data: product.id });
-            toast.success("Product archived");
-            navigate({ to: "/dashboard/catalog/products" });
-        } catch (error) {
-            toast.error("Failed to archive product");
-        }
+        archiveMutation.mutate(product.id);
     };
 
     const conversionForm = useForm({
@@ -55,19 +78,10 @@ function ProductDetailComponent() {
             onChange: conversionSchema,
         },
         onSubmit: async ({ value }) => {
-            try {
-                await createConversion({ 
-                    data: { 
-                        productId: product.id,
-                        ...value 
-                    } 
-                });
-                toast.success("Conversion rule added");
-                conversionForm.reset();
-                // Note: Re-fetching would be ideal here if we had a list endpoint
-            } catch (error) {
-                toast.error("Failed to add conversion");
-            }
+            conversionMutation.mutate({ 
+                productId: product.id,
+                ...value 
+            });
         },
     });
 

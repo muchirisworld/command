@@ -3,17 +3,18 @@ import { PackageReceiveIcon, Plus, ArrowRight01Icon } from "@hugeicons/core-free
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { getProducts } from "@/lib/api-client";
+import { productsQueryOptions } from "@/lib/queries";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/dashboard/")({
 	component: DashboardComponent,
-	loader: async () => {
-		return await getProducts();
+	loader: async ({ context }) => {
+		await context.queryClient.ensureQueryData(productsQueryOptions());
 	},
 });
 
 function DashboardComponent() {
-	const products = Route.useLoaderData();
+	const { data: products } = useSuspenseQuery(productsQueryOptions());
 
 	return (
 		<div className="p-6 space-y-8">

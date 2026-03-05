@@ -11,19 +11,20 @@ import {
     TableHeader, 
     TableRow 
 } from "@/components/ui/table";
-import { getProducts } from "@/lib/api-client";
 import { useState, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
+import { productsQueryOptions } from "@/lib/queries";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/dashboard/catalog/products/")({
     component: ProductsListComponent,
-    loader: async () => {
-        return await getProducts();
+    loader: async ({ context }) => {
+        await context.queryClient.ensureQueryData(productsQueryOptions());
     },
 });
 
 function ProductsListComponent() {
-    const products = Route.useLoaderData();
+    const { data: products } = useSuspenseQuery(productsQueryOptions());
     const [search, setSearch] = useState("");
 
     const filteredProducts = useMemo(() => {

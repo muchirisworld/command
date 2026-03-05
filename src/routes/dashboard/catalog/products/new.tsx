@@ -14,6 +14,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { createProduct } from "@/lib/api-client";
 import { toast } from "sonner";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/dashboard/catalog/products/new")({
     component: CreateProductComponent,
@@ -27,6 +28,23 @@ const productSchema = z.object({
 
 function CreateProductComponent() {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
+
+    const createProductMutation = useMutation({
+        mutationFn: (data: { name: string; description?: string; base_unit: string }) => 
+            createProduct({ data }),
+        onSuccess: (product) => {
+            toast.success("Product created successfully");
+            queryClient.invalidateQueries({ queryKey: ['products'] });
+            navigate({ 
+                to: "/dashboard/catalog/products/$productId", 
+                params: { productId: product.id } 
+            });
+        },
+        onError: (error) => {
+            toast.error(error instanceof Error ? error.message : "Failed to create product");
+        },
+    });
 
     const form = useForm({
         defaultValues: {
@@ -38,16 +56,7 @@ function CreateProductComponent() {
             onChange: productSchema,
         },
         onSubmit: async ({ value }) => {
-            try {
-                const product = await createProduct({ data: value });
-                toast.success("Product created successfully");
-                navigate({ 
-                    to: "/dashboard/catalog/products/$productId", 
-                    params: { productId: product.id } 
-                });
-            } catch (error) {
-                toast.error(error instanceof Error ? error.message : "Failed to create product");
-            }
+            createProductMutation.mutate(value);
         },
     });
 
