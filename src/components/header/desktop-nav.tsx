@@ -80,7 +80,11 @@ const DesktopNav = () => {
 				</NavigationMenuItem>
 				<NavigationMenuLink
 					className="px-4"
-					render={<a className="rounded-md p-2 hover:bg-accent" href="/pricing">Pricing</a>}
+					render={
+						<a className="rounded-md p-2 hover:bg-accent" href="/pricing">
+							Pricing
+						</a>
+					}
 				/>
 			</NavigationMenuList>
 		</NavigationMenu>

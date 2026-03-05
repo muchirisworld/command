@@ -39,14 +39,20 @@ const AppSidebar = () => {
 			<SidebarHeader>
 				<SidebarMenu>
 					<SidebarMenuItem>
-						<div className={cn("flex items-center gap-2 px-2 py-2", !open && "justify-center px-0")}>
+						<div
+							className={cn(
+								"flex items-center gap-2 px-2 py-2",
+								!open && "justify-center px-0",
+							)}
+						>
 							{open ? (
-								<OrganizationSwitcher 
+								<OrganizationSwitcher
 									appearance={{
 										elements: {
 											rootBox: "w-full",
-											organizationSwitcherTrigger: "w-full justify-start px-2 py-1 border border-border bg-background hover:bg-muted transition-colors",
-										}
+											organizationSwitcherTrigger:
+												"w-full justify-start px-2 py-1 border border-border bg-background hover:bg-muted transition-colors",
+										},
 									}}
 								/>
 							) : (

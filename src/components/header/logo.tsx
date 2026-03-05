@@ -1,5 +1,5 @@
-import { useId } from "react";
 import type React from "react";
+import { useId } from "react";
 
 export const LogoIcon = (props: React.ComponentProps<"svg">) => (
 	<svg
