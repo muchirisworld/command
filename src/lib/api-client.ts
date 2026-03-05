@@ -12,22 +12,19 @@ import { auth } from "@clerk/tanstack-react-start/server";
 
 const backendUrl = process.env.BACKEND_URL
 
-const { getToken } = await auth();
-
 async function fetchTerminal<T>(
     endpoint: string, 
     options: RequestInit = {}, 
     orgId: string
 ): Promise<T> {
+    const { getToken } = await auth();
     const token = await getToken();
     if (!token) throw new Error("Authentication token not available");
-    console.log("Authentication token: ", token); // Debugging line - remove in production
-
+    
     const url = `${backendUrl}${endpoint}`;
     const headers = new Headers(options.headers);
-    headers.set("X-Organization-Id", orgId);
+    headers.set("X-Organization-ID", orgId);
 
-    console.log("Org ID: ", orgId); // Debugging line - remove in production
     headers.set("Authorization", `Bearer ${token}`);
     headers.set("Content-Type", "application/json");
 
