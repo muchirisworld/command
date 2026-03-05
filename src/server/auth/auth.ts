@@ -10,17 +10,20 @@ export const checkAuth = authFunction.handler(({ context }) => {
 	};
 });
 
-export const requireAuth = authFunction.handler(({ context }) => {
+export const requireAuth = authFunction.handler(async ({ context }) => {
 	if (!context.auth.isAuthenticated) {
 		throw redirect({
 			to: "/auth/sign-in",
 		});
 	}
 
+	const token = await context.auth.getToken();
+
 	return {
 		userId: context.auth.userId,
 		orgId: context.auth.orgId,
 		permissions: context.auth.orgPermissions,
 		sessionId: context.auth.sessionId,
+		token,
 	};
 });
