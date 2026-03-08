@@ -85,11 +85,14 @@ function NewProductPage() {
 								onChange={(e) => field.handleChange(e.target.value)}
 								placeholder="e.g. Premium Coffee Beans"
 							/>
-							{field.state.meta.errors ? (
-								<p className="text-sm text-destructive">
-									{field.state.meta.errors.join(", ")}
-								</p>
-							) : null}
+							{field.state.meta.errors.length > 0 &&
+							field.state.meta.isTouched
+								? field.state.meta.errors.map((e, idx) => (
+										<p key={idx} className="text-xs text-destructive">
+											{e?.message}
+										</p>
+									))
+								: null}
 						</div>
 					)}
 				/>
@@ -108,11 +111,14 @@ function NewProductPage() {
 								onChange={(e) => field.handleChange(e.target.value)}
 								placeholder="e.g. EA, KG, L"
 							/>
-							{field.state.meta.errors ? (
-								<p className="text-sm text-destructive">
-									{field.state.meta.errors.join(", ")}
-								</p>
-							) : null}
+							{field.state.meta.errors.length > 0 &&
+							field.state.meta.isTouched
+								? field.state.meta.errors.map((e, idx) => (
+										<p key={idx} className="text-xs text-destructive">
+											{e?.message}
+										</p>
+									))
+								: null}
 						</div>
 					)}
 				/>
@@ -132,11 +138,14 @@ function NewProductPage() {
 								placeholder="Optional description"
 								rows={4}
 							/>
-							{field.state.meta.errors ? (
-								<p className="text-sm text-destructive">
-									{field.state.meta.errors.join(", ")}
-								</p>
-							) : null}
+							{field.state.meta.errors.length > 0 &&
+							field.state.meta.isTouched
+								? field.state.meta.errors.map((e, idx) => (
+										<p key={idx} className="text-xs text-destructive">
+											{e?.message}
+										</p>
+									))
+								: null}
 						</div>
 					)}
 				/>
