@@ -15,7 +15,7 @@ export const Route = createFileRoute("/_admin/catalog/products/new")({
 
 const productSchema = z.object({
 	name: z.string().min(1, "Name is required"),
-	description: z.string().min(1, "Description is required"),
+	description: z.string(),
 	base_unit: z.string().min(1, "Base unit is required"),
 });
 
@@ -85,14 +85,11 @@ function NewProductPage() {
 								onChange={(e) => field.handleChange(e.target.value)}
 								placeholder="e.g. Premium Coffee Beans"
 							/>
-							{field.state.meta.errors.length > 0 &&
-							field.state.meta.isTouched
-								? field.state.meta.errors.map((e, idx) => (
-										<p key={idx} className="text-xs text-destructive">
-											{e?.message}
-										</p>
-									))
-								: null}
+							{field.state.meta.errors ? (
+								<p className="text-sm text-destructive">
+									{field.state.meta.errors.join(", ")}
+								</p>
+							) : null}
 						</div>
 					)}
 				/>
@@ -111,14 +108,11 @@ function NewProductPage() {
 								onChange={(e) => field.handleChange(e.target.value)}
 								placeholder="e.g. EA, KG, L"
 							/>
-							{field.state.meta.errors.length > 0 &&
-							field.state.meta.isTouched
-								? field.state.meta.errors.map((e, idx) => (
-										<p key={idx} className="text-xs text-destructive">
-											{e?.message}
-										</p>
-									))
-								: null}
+							{field.state.meta.errors ? (
+								<p className="text-sm text-destructive">
+									{field.state.meta.errors.join(", ")}
+								</p>
+							) : null}
 						</div>
 					)}
 				/>
@@ -138,14 +132,11 @@ function NewProductPage() {
 								placeholder="Optional description"
 								rows={4}
 							/>
-							{field.state.meta.errors.length > 0 &&
-							field.state.meta.isTouched
-								? field.state.meta.errors.map((e, idx) => (
-										<p key={idx} className="text-xs text-destructive">
-											{e?.message}
-										</p>
-									))
-								: null}
+							{field.state.meta.errors ? (
+								<p className="text-sm text-destructive">
+									{field.state.meta.errors.join(", ")}
+								</p>
+							) : null}
 						</div>
 					)}
 				/>

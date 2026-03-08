@@ -19,10 +19,10 @@ import { Route as AuthCreateOrgIndexRouteImport } from './routes/auth/create-org
 import { Route as AdminInventoryReceiveRouteImport } from './routes/_admin/inventory/receive'
 import { Route as AdminCatalogProductsIndexRouteImport } from './routes/_admin/catalog/products/index'
 import { Route as AdminCatalogProductsNewRouteImport } from './routes/_admin/catalog/products/new'
+import { Route as AdminCatalogProductsProductIdRouteImport } from './routes/_admin/catalog/products/$productId'
 import { Route as AuthSignInTasksChooseOrganizationIndexRouteImport } from './routes/auth/sign-in/tasks/choose-organization/index'
-import { Route as AdminCatalogProductsProductIdIndexRouteImport } from './routes/_admin/catalog/products/$productId/index'
-import { Route as AdminInventoryVariantsVariantIdStockRouteImport } from './routes/_admin/inventory/variants/$variantId/stock'
-import { Route as AdminCatalogProductsProductIdVariantsNewRouteImport } from './routes/_admin/catalog/products/$productId/variants/new'
+import { Route as AdminInventoryVariantsVariantIdStockRouteImport } from './routes/_admin/inventory/variants/$variantId.stock'
+import { Route as AdminCatalogProductsProductIdVariantsNewRouteImport } from './routes/_admin/catalog/products/$productId.variants.new'
 
 const AdminRoute = AdminRouteImport.update({
   id: '/_admin',
@@ -74,17 +74,17 @@ const AdminCatalogProductsNewRoute = AdminCatalogProductsNewRouteImport.update({
   path: '/catalog/products/new',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminCatalogProductsProductIdRoute =
+  AdminCatalogProductsProductIdRouteImport.update({
+    id: '/catalog/products/$productId',
+    path: '/catalog/products/$productId',
+    getParentRoute: () => AdminRoute,
+  } as any)
 const AuthSignInTasksChooseOrganizationIndexRoute =
   AuthSignInTasksChooseOrganizationIndexRouteImport.update({
     id: '/sign-in/tasks/choose-organization/',
     path: '/sign-in/tasks/choose-organization/',
     getParentRoute: () => AuthRouteRoute,
-  } as any)
-const AdminCatalogProductsProductIdIndexRoute =
-  AdminCatalogProductsProductIdIndexRouteImport.update({
-    id: '/catalog/products/$productId/',
-    path: '/catalog/products/$productId/',
-    getParentRoute: () => AdminRoute,
   } as any)
 const AdminInventoryVariantsVariantIdStockRoute =
   AdminInventoryVariantsVariantIdStockRouteImport.update({
@@ -94,9 +94,9 @@ const AdminInventoryVariantsVariantIdStockRoute =
   } as any)
 const AdminCatalogProductsProductIdVariantsNewRoute =
   AdminCatalogProductsProductIdVariantsNewRouteImport.update({
-    id: '/catalog/products/$productId/variants/new',
-    path: '/catalog/products/$productId/variants/new',
-    getParentRoute: () => AdminRoute,
+    id: '/variants/new',
+    path: '/variants/new',
+    getParentRoute: () => AdminCatalogProductsProductIdRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -107,10 +107,10 @@ export interface FileRoutesByFullPath {
   '/auth/create-org': typeof AuthCreateOrgIndexRoute
   '/auth/sign-in': typeof AuthSignInIndexRoute
   '/auth/sign-up': typeof AuthSignUpIndexRoute
+  '/catalog/products/$productId': typeof AdminCatalogProductsProductIdRouteWithChildren
   '/catalog/products/new': typeof AdminCatalogProductsNewRoute
   '/catalog/products': typeof AdminCatalogProductsIndexRoute
   '/inventory/variants/$variantId/stock': typeof AdminInventoryVariantsVariantIdStockRoute
-  '/catalog/products/$productId': typeof AdminCatalogProductsProductIdIndexRoute
   '/auth/sign-in/tasks/choose-organization': typeof AuthSignInTasksChooseOrganizationIndexRoute
   '/catalog/products/$productId/variants/new': typeof AdminCatalogProductsProductIdVariantsNewRoute
 }
@@ -122,10 +122,10 @@ export interface FileRoutesByTo {
   '/auth/create-org': typeof AuthCreateOrgIndexRoute
   '/auth/sign-in': typeof AuthSignInIndexRoute
   '/auth/sign-up': typeof AuthSignUpIndexRoute
+  '/catalog/products/$productId': typeof AdminCatalogProductsProductIdRouteWithChildren
   '/catalog/products/new': typeof AdminCatalogProductsNewRoute
   '/catalog/products': typeof AdminCatalogProductsIndexRoute
   '/inventory/variants/$variantId/stock': typeof AdminInventoryVariantsVariantIdStockRoute
-  '/catalog/products/$productId': typeof AdminCatalogProductsProductIdIndexRoute
   '/auth/sign-in/tasks/choose-organization': typeof AuthSignInTasksChooseOrganizationIndexRoute
   '/catalog/products/$productId/variants/new': typeof AdminCatalogProductsProductIdVariantsNewRoute
 }
@@ -139,10 +139,10 @@ export interface FileRoutesById {
   '/auth/create-org/': typeof AuthCreateOrgIndexRoute
   '/auth/sign-in/': typeof AuthSignInIndexRoute
   '/auth/sign-up/': typeof AuthSignUpIndexRoute
+  '/_admin/catalog/products/$productId': typeof AdminCatalogProductsProductIdRouteWithChildren
   '/_admin/catalog/products/new': typeof AdminCatalogProductsNewRoute
   '/_admin/catalog/products/': typeof AdminCatalogProductsIndexRoute
   '/_admin/inventory/variants/$variantId/stock': typeof AdminInventoryVariantsVariantIdStockRoute
-  '/_admin/catalog/products/$productId/': typeof AdminCatalogProductsProductIdIndexRoute
   '/auth/sign-in/tasks/choose-organization/': typeof AuthSignInTasksChooseOrganizationIndexRoute
   '/_admin/catalog/products/$productId/variants/new': typeof AdminCatalogProductsProductIdVariantsNewRoute
 }
@@ -156,10 +156,10 @@ export interface FileRouteTypes {
     | '/auth/create-org'
     | '/auth/sign-in'
     | '/auth/sign-up'
+    | '/catalog/products/$productId'
     | '/catalog/products/new'
     | '/catalog/products'
     | '/inventory/variants/$variantId/stock'
-    | '/catalog/products/$productId'
     | '/auth/sign-in/tasks/choose-organization'
     | '/catalog/products/$productId/variants/new'
   fileRoutesByTo: FileRoutesByTo
@@ -171,10 +171,10 @@ export interface FileRouteTypes {
     | '/auth/create-org'
     | '/auth/sign-in'
     | '/auth/sign-up'
+    | '/catalog/products/$productId'
     | '/catalog/products/new'
     | '/catalog/products'
     | '/inventory/variants/$variantId/stock'
-    | '/catalog/products/$productId'
     | '/auth/sign-in/tasks/choose-organization'
     | '/catalog/products/$productId/variants/new'
   id:
@@ -187,10 +187,10 @@ export interface FileRouteTypes {
     | '/auth/create-org/'
     | '/auth/sign-in/'
     | '/auth/sign-up/'
+    | '/_admin/catalog/products/$productId'
     | '/_admin/catalog/products/new'
     | '/_admin/catalog/products/'
     | '/_admin/inventory/variants/$variantId/stock'
-    | '/_admin/catalog/products/$productId/'
     | '/auth/sign-in/tasks/choose-organization/'
     | '/_admin/catalog/products/$productId/variants/new'
   fileRoutesById: FileRoutesById
@@ -272,19 +272,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCatalogProductsNewRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_admin/catalog/products/$productId': {
+      id: '/_admin/catalog/products/$productId'
+      path: '/catalog/products/$productId'
+      fullPath: '/catalog/products/$productId'
+      preLoaderRoute: typeof AdminCatalogProductsProductIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/auth/sign-in/tasks/choose-organization/': {
       id: '/auth/sign-in/tasks/choose-organization/'
       path: '/sign-in/tasks/choose-organization'
       fullPath: '/auth/sign-in/tasks/choose-organization'
       preLoaderRoute: typeof AuthSignInTasksChooseOrganizationIndexRouteImport
       parentRoute: typeof AuthRouteRoute
-    }
-    '/_admin/catalog/products/$productId/': {
-      id: '/_admin/catalog/products/$productId/'
-      path: '/catalog/products/$productId'
-      fullPath: '/catalog/products/$productId'
-      preLoaderRoute: typeof AdminCatalogProductsProductIdIndexRouteImport
-      parentRoute: typeof AdminRoute
     }
     '/_admin/inventory/variants/$variantId/stock': {
       id: '/_admin/inventory/variants/$variantId/stock'
@@ -295,10 +295,10 @@ declare module '@tanstack/react-router' {
     }
     '/_admin/catalog/products/$productId/variants/new': {
       id: '/_admin/catalog/products/$productId/variants/new'
-      path: '/catalog/products/$productId/variants/new'
+      path: '/variants/new'
       fullPath: '/catalog/products/$productId/variants/new'
       preLoaderRoute: typeof AdminCatalogProductsProductIdVariantsNewRouteImport
-      parentRoute: typeof AdminRoute
+      parentRoute: typeof AdminCatalogProductsProductIdRoute
     }
   }
 }
@@ -322,29 +322,41 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
   AuthRouteRouteChildren,
 )
 
+interface AdminCatalogProductsProductIdRouteChildren {
+  AdminCatalogProductsProductIdVariantsNewRoute: typeof AdminCatalogProductsProductIdVariantsNewRoute
+}
+
+const AdminCatalogProductsProductIdRouteChildren: AdminCatalogProductsProductIdRouteChildren =
+  {
+    AdminCatalogProductsProductIdVariantsNewRoute:
+      AdminCatalogProductsProductIdVariantsNewRoute,
+  }
+
+const AdminCatalogProductsProductIdRouteWithChildren =
+  AdminCatalogProductsProductIdRoute._addFileChildren(
+    AdminCatalogProductsProductIdRouteChildren,
+  )
+
 interface AdminRouteChildren {
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminInventoryReceiveRoute: typeof AdminInventoryReceiveRoute
+  AdminCatalogProductsProductIdRoute: typeof AdminCatalogProductsProductIdRouteWithChildren
   AdminCatalogProductsNewRoute: typeof AdminCatalogProductsNewRoute
   AdminCatalogProductsIndexRoute: typeof AdminCatalogProductsIndexRoute
   AdminInventoryVariantsVariantIdStockRoute: typeof AdminInventoryVariantsVariantIdStockRoute
-  AdminCatalogProductsProductIdIndexRoute: typeof AdminCatalogProductsProductIdIndexRoute
-  AdminCatalogProductsProductIdVariantsNewRoute: typeof AdminCatalogProductsProductIdVariantsNewRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminSettingsRoute: AdminSettingsRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminInventoryReceiveRoute: AdminInventoryReceiveRoute,
+  AdminCatalogProductsProductIdRoute:
+    AdminCatalogProductsProductIdRouteWithChildren,
   AdminCatalogProductsNewRoute: AdminCatalogProductsNewRoute,
   AdminCatalogProductsIndexRoute: AdminCatalogProductsIndexRoute,
   AdminInventoryVariantsVariantIdStockRoute:
     AdminInventoryVariantsVariantIdStockRoute,
-  AdminCatalogProductsProductIdIndexRoute:
-    AdminCatalogProductsProductIdIndexRoute,
-  AdminCatalogProductsProductIdVariantsNewRoute:
-    AdminCatalogProductsProductIdVariantsNewRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)

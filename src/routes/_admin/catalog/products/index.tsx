@@ -93,5 +93,5 @@ function ProductsIndexPage() {
 				</Table>
 			</div>
 		</div>
-	);
+	)
 }
