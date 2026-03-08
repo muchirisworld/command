@@ -121,9 +121,31 @@ export const createVariant = createServerFn({ method: "POST" })
 		);
 	});
 
-// Missing: GET /catalog/products/{id}/variants - UI will have TODO for this as per requirement
+export const getVariants = createServerFn({ method: "GET" })
+	.inputValidator((productId: string) => productId)
+	.handler(async ({ data: productId }) => {
+		const { orgId } = await requireAuth();
+		if (!orgId) throw new Error("Organization context required");
+		return fetchTerminal<Variant[]>(
+			`/catalog/products/${productId}/variants`,
+			{},
+			orgId,
+		);
+	});
 
 // Inventory
+export const getConversions = createServerFn({ method: "GET" })
+	.inputValidator((productId: string) => productId)
+	.handler(async ({ data: productId }) => {
+		const { orgId } = await requireAuth();
+		if (!orgId) throw new Error("Organization context required");
+		return fetchTerminal<UnitConversion[]>(
+			`/inventory/products/${productId}/conversions`,
+			{},
+			orgId,
+		);
+	});
+
 export const createConversion = createServerFn({ method: "POST" })
 	.inputValidator(
 		(data: {
