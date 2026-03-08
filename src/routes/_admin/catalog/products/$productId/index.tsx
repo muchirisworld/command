@@ -22,13 +22,13 @@ import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export const Route = createFileRoute("/_admin/catalog/products/$productId")({
+export const Route = createFileRoute("/_admin/catalog/products/$productId/")({
 	loader: async ({ context: { queryClient }, params: { productId } }) => {
 		await Promise.all([
 			queryClient.ensureQueryData(productQueryOptions(productId)),
 			queryClient.ensureQueryData(variantsQueryOptions(productId)),
 			queryClient.ensureQueryData(conversionsQueryOptions(productId)),
-		]);
+		])
 	},
 	component: ProductDetailPage,
 });
@@ -48,7 +48,7 @@ function ProductDetailPage() {
 	const { data: variants } = useSuspenseQuery(variantsQueryOptions(productId));
 	const { data: conversions } = useSuspenseQuery(
 		conversionsQueryOptions(productId),
-	);
+	)
 
 	const archiveMutation = useMutation({
 		mutationFn: () => archiveProduct({ data: productId }),
@@ -58,7 +58,7 @@ function ProductDetailPage() {
 			router.invalidate();
 		},
 		onError: (error) => toast.error(`Failed to archive: ${error.message}`),
-	});
+	})
 
 	const conversionMutation = useMutation({
 		mutationFn: (data: z.infer<typeof conversionSchema>) =>
@@ -72,12 +72,12 @@ function ProductDetailPage() {
 			toast.success("Conversion added");
 			queryClient.invalidateQueries({
 				queryKey: ["products", productId, "conversions"],
-			});
+			})
 			conversionForm.reset();
 		},
 		onError: (error) =>
 			toast.error(`Failed to add conversion: ${error.message}`),
-	});
+	})
 
 	const conversionForm = useForm({
 		defaultValues: {
@@ -91,7 +91,7 @@ function ProductDetailPage() {
 		onSubmit: async ({ value }) => {
 			await conversionMutation.mutateAsync(value);
 		},
-	});
+	})
 
 	return (
 		<div className="flex flex-col gap-8">
@@ -226,8 +226,8 @@ function ProductDetailPage() {
 						<h3 className="text-lg font-medium mb-4">Add Conversion</h3>
 						<form
 							onSubmit={(e) => {
-								e.preventDefault();
-								e.stopPropagation();
+								e.preventDefault()
+								e.stopPropagation()
 								conversionForm.handleSubmit();
 							}}
 							className="space-y-4"
@@ -315,5 +315,5 @@ function ProductDetailPage() {
 				</div>
 			</div>
 		</div>
-	);
+	)
 }
