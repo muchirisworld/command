@@ -100,7 +100,9 @@ function ReceiveInventoryPage() {
 							}}
 						>
 							<SelectTrigger className="flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50">
-								<SelectValue placeholder="Select a product" />
+								<SelectValue placeholder="Select a product">
+									{products?.find((p) => p.id === selectedProductId)?.name}
+								</SelectValue>
 							</SelectTrigger>
 							<SelectContent>
 								{products?.map((p) => (
@@ -122,7 +124,9 @@ function ReceiveInventoryPage() {
 								}}
 							>
 								<SelectTrigger className="flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50">
-									<SelectValue placeholder="Select a variant" />
+									<SelectValue placeholder="Select a variant">
+										{variants?.find((v) => v.id === selectedVariantId)?.sku}
+									</SelectValue>
 								</SelectTrigger>
 								<SelectContent>
 									{variants?.map((v) => (
@@ -216,13 +220,13 @@ function ReceiveInventoryPage() {
 									placeholder="e.g. PO-12345"
 								/>
 								{field.state.meta.errors.length > 0 &&
-									field.state.meta.isTouched
-										? field.state.meta.errors.map((e, idx) => (
-												<p key={idx} className="text-xs text-destructive">
-													{e?.message}
-												</p>
-											))
-										: null}
+								field.state.meta.isTouched
+									? field.state.meta.errors.map((e, idx) => (
+											<p key={idx} className="text-xs text-destructive">
+												{e?.message}
+											</p>
+										))
+									: null}
 							</div>
 						)}
 					/>
