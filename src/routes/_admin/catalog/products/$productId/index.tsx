@@ -5,7 +5,13 @@ import {
 	variantsQueryOptions,
 	conversionsQueryOptions,
 } from "@/lib/queries";
-import { archiveProduct, createConversion } from "@/lib/api-client";
+import {
+	archiveProduct,
+	createConversion,
+	deleteVariant,
+	deleteConversion,
+	updateVariant,
+} from "@/lib/api-client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -25,12 +31,27 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
-	// DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, ViewIcon, Edit01Icon, Delete01Icon } from "@hugeicons/core-free-icons";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+	MoreHorizontal,
+	ViewIcon,
+	Edit01Icon,
+	Delete01Icon,
+} from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import { useState } from "react";
+import type { Variant } from "@/lib/types";
 
 export const Route = createFileRoute("/_admin/catalog/products/$productId/")({
 	loader: async ({ context: { queryClient }, params: { productId } }) => {
@@ -43,6 +64,188 @@ export const Route = createFileRoute("/_admin/catalog/products/$productId/")({
 	component: ProductDetailPage,
 });
 
+const variantSchema = z.object({
+	sku: z.string().min(1, "SKU is required"),
+	barcode: z.string(),
+	price: z.number().min(0, "Price must be >= 0"),
+	cost: z.number().min(0, "Cost must be >= 0"),
+	is_active: z.boolean(),
+});
+
+function EditVariantDialog({
+	variant,
+	productId,
+	open,
+	onOpenChange,
+}: {
+	variant: Variant | null;
+	productId: string;
+	open: boolean;
+	onOpenChange: (open: boolean) => void;
+}) {
+	const queryClient = useQueryClient();
+
+	const mutation = useMutation({
+		mutationFn: (data: z.infer<typeof variantSchema>) => {
+			if (!variant) throw new Error("No variant selected");
+			return updateVariant({
+				data: {
+					id: variant.id,
+					...data,
+					barcode: data.barcode || undefined,
+				},
+			});
+		},
+		onSuccess: () => {
+			toast.success("Variant updated");
+			queryClient.invalidateQueries({
+				queryKey: ["products", productId, "variants"],
+			});
+			onOpenChange(false);
+		},
+		onError: (error) => toast.error(`Failed to update: ${error.message}`),
+	});
+
+	const form = useForm({
+		defaultValues: {
+			sku: variant?.sku ?? "",
+			barcode: variant?.barcode ?? "",
+			price: variant?.price ?? 0,
+			cost: variant?.cost ?? 0,
+			is_active: variant?.is_active ?? true,
+		},
+		validators: {
+			onChange: variantSchema
+		},
+		onSubmit: async ({ value }) => {
+			await mutation.mutateAsync(value);
+		},
+	});
+
+	return (
+		<Dialog open={open} onOpenChange={onOpenChange}>
+			<DialogContent className="max-w-md">
+				<DialogHeader>
+					<DialogTitle>Edit Variant</DialogTitle>
+					<DialogDescription>
+						Update SKU, pricing, and availability.
+					</DialogDescription>
+				</DialogHeader>
+				<form
+					onSubmit={(e) => {
+						e.preventDefault();
+						e.stopPropagation();
+						form.handleSubmit();
+					}}
+					className="space-y-4 py-4"
+				>
+					<form.Field
+						name="sku"
+						validators={{ onChange: variantSchema.shape.sku }}
+						children={(field) => (
+							<div className="space-y-2">
+								<Label htmlFor={field.name}>SKU</Label>
+								<Input
+									id={field.name}
+									value={field.state.value}
+									onBlur={field.handleBlur}
+									onChange={(e) => field.handleChange(e.target.value)}
+								/>
+							</div>
+						)}
+					/>
+					<form.Field
+						name="barcode"
+						children={(field) => (
+							<div className="space-y-2">
+								<Label htmlFor={field.name}>Barcode</Label>
+								<Input
+									id={field.name}
+									value={field.state.value}
+									onBlur={field.handleBlur}
+									onChange={(e) => field.handleChange(e.target.value)}
+								/>
+							</div>
+						)}
+					/>
+					<div className="grid grid-cols-2 gap-4">
+						<form.Field
+							name="price"
+							validators={{ onChange: variantSchema.shape.price }}
+							children={(field) => (
+								<div className="space-y-2">
+									<Label htmlFor={field.name}>Price</Label>
+									<Input
+										id={field.name}
+										type="number"
+										step="0.01"
+										value={field.state.value}
+										onBlur={field.handleBlur}
+										onChange={(e) =>
+											field.handleChange(Number.parseFloat(e.target.value) || 0)
+										}
+									/>
+								</div>
+							)}
+						/>
+						<form.Field
+							name="cost"
+							validators={{ onChange: variantSchema.shape.cost }}
+							children={(field) => (
+								<div className="space-y-2">
+									<Label htmlFor={field.name}>Cost</Label>
+									<Input
+										id={field.name}
+										type="number"
+										step="0.01"
+										value={field.state.value}
+										onBlur={field.handleBlur}
+										onChange={(e) =>
+											field.handleChange(Number.parseFloat(e.target.value) || 0)
+										}
+									/>
+								</div>
+							)}
+						/>
+					</div>
+					<form.Field
+						name="is_active"
+						children={(field) => (
+							<div className="flex items-center space-x-2 py-2">
+								<Checkbox
+									id={field.name}
+									checked={field.state.value}
+									onCheckedChange={(checked) =>
+										field.handleChange(checked === true)
+									}
+								/>
+								<Label htmlFor={field.name}>Active</Label>
+							</div>
+						)}
+					/>
+					<DialogFooter>
+						<Button
+							type="button"
+							variant="outline"
+							onClick={() => onOpenChange(false)}
+						>
+							Cancel
+						</Button>
+						<form.Subscribe
+							selector={(state) => [state.canSubmit, state.isSubmitting]}
+							children={([canSubmit, isSubmitting]) => (
+								<Button type="submit" disabled={!canSubmit || isSubmitting}>
+									{isSubmitting ? "Saving..." : "Save Changes"}
+								</Button>
+							)}
+						/>
+					</DialogFooter>
+				</form>
+			</DialogContent>
+		</Dialog>
+	);
+}
+
 const conversionSchema = z.object({
 	unit_from: z.string().min(1, "Required"),
 	factor: z.number().positive("Must be positive"),
@@ -53,6 +256,8 @@ function ProductDetailPage() {
 	const { productId } = Route.useParams();
 	const router = useRouter();
 	const queryClient = useQueryClient();
+
+	const [editingVariant, setEditingVariant] = useState<Variant | null>(null);
 
 	const { data: product } = useSuspenseQuery(productQueryOptions(productId));
 	const { data: variants } = useSuspenseQuery(variantsQueryOptions(productId));
@@ -87,6 +292,31 @@ function ProductDetailPage() {
 		},
 		onError: (error) =>
 			toast.error(`Failed to add conversion: ${error.message}`),
+	});
+
+	const deleteVariantMutation = useMutation({
+		mutationFn: (variantId: string) => deleteVariant({ data: variantId }),
+		onSuccess: () => {
+			toast.success("Variant deleted");
+			queryClient.invalidateQueries({
+				queryKey: ["products", productId, "variants"],
+			});
+		},
+		onError: (error) =>
+			toast.error(`Failed to delete variant: ${error.message}`),
+	});
+
+	const deleteConversionMutation = useMutation({
+		mutationFn: (conversionId: string) =>
+			deleteConversion({ data: conversionId }),
+		onSuccess: () => {
+			toast.success("Conversion deleted");
+			queryClient.invalidateQueries({
+				queryKey: ["products", productId, "conversions"],
+			});
+		},
+		onError: (error) =>
+			toast.error(`Failed to delete conversion: ${error.message}`),
 	});
 
 	const conversionForm = useForm({
@@ -185,23 +415,43 @@ function ProductDetailPage() {
 													params={{ variantId: variant.id }}
 												>
 													<DropdownMenuItem className="cursor-pointer">
-														<HugeiconsIcon icon={ViewIcon} size={14} className="mr-2" />
+														<HugeiconsIcon
+															icon={ViewIcon}
+															size={14}
+															className="mr-2"
+														/>
 														View Stock
 													</DropdownMenuItem>
 												</Link>
 												<DropdownMenuItem
 													className="cursor-pointer"
-													onClick={() => toast.info("Edit Variant TODO: Needs PATCH /catalog/variants/{id} UI")}
+													onClick={() => setEditingVariant(variant)}
 												>
-													<HugeiconsIcon icon={Edit01Icon} size={14} className="mr-2" />
+													<HugeiconsIcon
+														icon={Edit01Icon}
+														size={14}
+														className="mr-2"
+													/>
 													Edit
 												</DropdownMenuItem>
 												<DropdownMenuSeparator />
 												<DropdownMenuItem
 													className="cursor-pointer text-destructive focus:text-destructive"
-													onClick={() => toast.info("Delete Variant TODO: Needs API endpoint")}
+													onClick={() => {
+														if (
+															confirm(
+																"Are you sure you want to delete this variant?",
+															)
+														) {
+															deleteVariantMutation.mutate(variant.id);
+														}
+													}}
 												>
-													<HugeiconsIcon icon={Delete01Icon} size={14} className="mr-2" />
+													<HugeiconsIcon
+														icon={Delete01Icon}
+														size={14}
+														className="mr-2"
+													/>
 													Delete
 												</DropdownMenuItem>
 											</DropdownMenuContent>
@@ -256,9 +506,21 @@ function ProductDetailPage() {
 												<DropdownMenuContent align="end">
 													<DropdownMenuItem
 														className="cursor-pointer text-destructive focus:text-destructive"
-														onClick={() => toast.info("Delete Conversion TODO: Needs API endpoint")}
+														onClick={() => {
+															if (
+																confirm(
+																	"Are you sure you want to delete this conversion?",
+																)
+															) {
+																deleteConversionMutation.mutate(conv.id);
+															}
+														}}
 													>
-														<HugeiconsIcon icon={Delete01Icon} size={14} className="mr-2" />
+														<HugeiconsIcon
+															icon={Delete01Icon}
+															size={14}
+															className="mr-2"
+														/>
 														Delete
 													</DropdownMenuItem>
 												</DropdownMenuContent>
@@ -370,6 +632,13 @@ function ProductDetailPage() {
 					</div>
 				</div>
 			</div>
+
+			<EditVariantDialog
+				variant={editingVariant}
+				productId={productId}
+				open={!!editingVariant}
+				onOpenChange={(open) => !open && setEditingVariant(null)}
+			/>
 		</div>
 	);
 }

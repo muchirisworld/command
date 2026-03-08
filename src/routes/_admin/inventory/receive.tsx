@@ -1,15 +1,22 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useQuery, useMutation } from "@tanstack/react-query";
 import { useForm } from "@tanstack/react-form";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
+import { toast } from "sonner";
 import { z } from "zod";
-import { productsQueryOptions, variantsQueryOptions } from "@/lib/queries";
-import { receiveInventory } from "@/lib/api-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "sonner";
-import { useState } from "react";
+import { receiveInventory } from "@/lib/api-client";
+import { productsQueryOptions, variantsQueryOptions } from "@/lib/queries";
 
 export const Route = createFileRoute("/_admin/inventory/receive")({
 	component: ReceiveInventoryPage,
@@ -60,7 +67,7 @@ function ReceiveInventoryPage() {
 	const form = useForm({
 		defaultValues: {
 			quantity: 1,
-			unit: "EA",
+			unit: "",
 			source_type: "manual",
 			note: "",
 		},
@@ -76,51 +83,55 @@ function ReceiveInventoryPage() {
 		<div className="flex flex-col gap-6 max-w-2xl mx-auto w-full">
 			<div>
 				<h1 className="text-3xl font-bold tracking-tight">Receive Inventory</h1>
-				<p className="text-muted-foreground">
-					Record new stock arrivals.
-				</p>
+				<p className="text-muted-foreground">Record new stock arrivals.</p>
 			</div>
 
 			<div className="space-y-6 bg-card p-6 rounded-lg border shadow-sm">
 				<div className="space-y-4 pb-6 border-b">
 					<div className="space-y-2">
 						<Label>Product</Label>
-						<select
-							className="flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+						<Select
 							value={selectedProductId}
-							onChange={(e) => {
-								setSelectedProductId(e.target.value);
-								setSelectedVariantId(""); // reset variant
+							onValueChange={(value) => {
+								if (value) {
+									setSelectedProductId(value);
+									setSelectedVariantId("");
+								}
 							}}
 						>
-							<option value="" disabled>
-								Select a product
-							</option>
-							{products?.map((p) => (
-								<option key={p.id} value={p.id}>
-									{p.name} ({p.base_unit})
-								</option>
-							))}
-						</select>
+							<SelectTrigger className="flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50">
+								<SelectValue placeholder="Select a product" />
+							</SelectTrigger>
+							<SelectContent>
+								{products?.map((p) => (
+									<SelectItem key={p.id} value={p.id}>
+										{p.name} ({p.base_unit})
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
 					</div>
 
 					{selectedProductId && (
 						<div className="space-y-2">
 							<Label>Variant</Label>
-							<select
-								className="flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+							<Select
 								value={selectedVariantId}
-								onChange={(e) => setSelectedVariantId(e.target.value)}
+								onValueChange={(value) => {
+									if (value) setSelectedVariantId(value);
+								}}
 							>
-								<option value="" disabled>
-									Select a variant
-								</option>
-								{variants?.map((v) => (
-									<option key={v.id} value={v.id}>
-										{v.sku} {v.barcode ? `(${v.barcode})` : ""}
-									</option>
-								))}
-							</select>
+								<SelectTrigger className="flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50">
+									<SelectValue placeholder="Select a variant" />
+								</SelectTrigger>
+								<SelectContent>
+									{variants?.map((v) => (
+										<SelectItem key={v.id} value={v.id}>
+											{v.sku} {v.barcode ? `(${v.barcode})` : ""}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
 						</div>
 					)}
 				</div>
@@ -151,11 +162,14 @@ function ReceiveInventoryPage() {
 											field.handleChange(Number.parseFloat(e.target.value) || 0)
 										}
 									/>
-									{field.state.meta.errors ? (
-										<p className="text-sm text-destructive">
-											{field.state.meta.errors.join(", ")}
-										</p>
-									) : null}
+									{field.state.meta.errors.length > 0 &&
+									field.state.meta.isTouched
+										? field.state.meta.errors.map((e, idx) => (
+												<p key={idx} className="text-xs text-destructive">
+													{e?.message}
+												</p>
+											))
+										: null}
 								</div>
 							)}
 						/>
@@ -174,11 +188,14 @@ function ReceiveInventoryPage() {
 										onChange={(e) => field.handleChange(e.target.value)}
 										placeholder="e.g. EA, BOX"
 									/>
-									{field.state.meta.errors ? (
-										<p className="text-sm text-destructive">
-											{field.state.meta.errors.join(", ")}
-										</p>
-									) : null}
+									{field.state.meta.errors.length > 0 &&
+									field.state.meta.isTouched
+										? field.state.meta.errors.map((e, idx) => (
+												<p key={idx} className="text-xs text-destructive">
+													{e?.message}
+												</p>
+											))
+										: null}
 								</div>
 							)}
 						/>
@@ -198,6 +215,14 @@ function ReceiveInventoryPage() {
 									onChange={(e) => field.handleChange(e.target.value)}
 									placeholder="e.g. PO-12345"
 								/>
+								{field.state.meta.errors.length > 0 &&
+									field.state.meta.isTouched
+										? field.state.meta.errors.map((e, idx) => (
+												<p key={idx} className="text-xs text-destructive">
+													{e?.message}
+												</p>
+											))
+										: null}
 							</div>
 						)}
 					/>
