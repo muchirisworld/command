@@ -9,6 +9,7 @@ import appCss from '../styles.css?url'
 import { NotFoundPage } from '@/components/elements/not-found'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import type { RouterContext } from '@/router'
+import { Toaster } from '@/components/ui/sonner'
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   head: () => ({
@@ -63,6 +64,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <body>
             <TooltipProvider>
               {children}
+              <Toaster />
             </TooltipProvider>
             <TanStackDevtools
               config={{

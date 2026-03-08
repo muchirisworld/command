@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { productsQueryOptions } from "@/lib/queries";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,6 +11,18 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { MoreHorizontal, ViewIcon, Edit01Icon, ArchiveIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { toast } from "sonner";
+import { archiveProduct } from "@/lib/api-client";
+import { useRouter } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_admin/catalog/products/")({
 	loader: ({ context: { queryClient } }) => {
@@ -21,6 +33,17 @@ export const Route = createFileRoute("/_admin/catalog/products/")({
 
 function ProductsIndexPage() {
 	const { data: products } = useSuspenseQuery(productsQueryOptions());
+	const queryClient = useQueryClient();
+	const router = useRouter();
+
+	const archiveMutation = useMutation({
+		mutationFn: (productId: string) => archiveProduct({ data: productId }),
+		onSuccess: () => {
+			toast.success("Product archived");
+			queryClient.invalidateQueries({ queryKey: ["products"] });
+		},
+		onError: (error) => toast.error(`Failed to archive: ${error.message}`),
+	});
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -44,7 +67,7 @@ function ProductsIndexPage() {
 							<TableHead>Base Unit</TableHead>
 							<TableHead>Status</TableHead>
 							<TableHead>Created At</TableHead>
-							<TableHead className="text-right">Actions</TableHead>
+							<TableHead className="w-20">Actions</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
@@ -70,15 +93,51 @@ function ProductsIndexPage() {
 								<TableCell>
 									{new Date(product.created_at).toLocaleDateString()}
 								</TableCell>
-								<TableCell className="text-right">
-									<Link
-										to="/catalog/products/$productId"
-										params={{ productId: product.id }}
-									>
-										<Button variant="ghost" size="sm">
-											View
-										</Button>
-									</Link>
+								<TableCell>
+									<DropdownMenu>
+										<DropdownMenuTrigger
+											render={
+												<Button variant="ghost" className="h-8 w-8 p-0">
+													<span className="sr-only">Open menu</span>
+													<HugeiconsIcon icon={MoreHorizontal} size={16} />
+												</Button>
+											}
+										/>
+										<DropdownMenuContent align="end">
+											<DropdownMenuItem
+												className="cursor-pointer"
+												onSelect={() => router.navigate({
+													to: "/catalog/products/$productId",
+													params: { productId: product.id },
+												})}
+												render={
+													<Link
+														to="/catalog/products/$productId"
+														params={{ productId: product.id }}
+														>
+														<HugeiconsIcon icon={ViewIcon} size={14} className="mr-2" />
+														View Details
+													</Link>
+												}
+											/>
+											<DropdownMenuItem
+												className="cursor-pointer"
+												onClick={() => toast.info("Edit Product TODO: Needs PATCH /catalog/products/{id} UI")}
+											>
+												<HugeiconsIcon icon={Edit01Icon} size={14} className="mr-2" />
+												Edit
+											</DropdownMenuItem>
+											<DropdownMenuSeparator />
+											<DropdownMenuItem
+												className="cursor-pointer text-destructive focus:text-destructive"
+												disabled={product.status === "archived"}
+												onClick={() => archiveMutation.mutate(product.id)}
+											>
+												<HugeiconsIcon icon={ArchiveIcon} size={14} className="mr-2" />
+												Archive
+											</DropdownMenuItem>
+										</DropdownMenuContent>
+									</DropdownMenu>
 								</TableCell>
 							</TableRow>
 						))}

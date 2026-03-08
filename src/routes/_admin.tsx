@@ -16,7 +16,7 @@ function RouteComponent() {
 		<SidebarProvider>
 			<AppSidebar />
 			<main className="flex-1 overflow-auto flex flex-col">
-				<header className="flex h-14 items-center gap-4 border-b bg-background px-6 lg:h-[60px]">
+				<header className="flex h-14 items-center gap-4 border-b bg-background px-6 lg:h-15">
 					<SidebarTrigger />
 					<div className="w-full flex-1">
 						<GlobalSearch />
