@@ -248,6 +248,7 @@ function EditVariantDialog({
 
 const conversionSchema = z.object({
 	unit_from: z.string().min(1, "Required"),
+	unit_to: z.string().min(1, "Required"),
 	factor: z.number().positive("Must be positive"),
 	precision: z.number().int().min(0, "Must be >= 0"),
 });
@@ -322,6 +323,7 @@ function ProductDetailPage() {
 	const conversionForm = useForm({
 		defaultValues: {
 			unit_from: "",
+			unit_to: product?.base_unit ?? "",
 			factor: 1,
 			precision: 0,
 		},
@@ -567,13 +569,19 @@ function ProductDetailPage() {
 										</div>
 									)}
 								/>
-								<div className="space-y-2">
-									<Label>To Unit</Label>
-									<Input value={product.base_unit} disabled />
-									<p className="text-xs text-muted-foreground">
-										Target is always base unit
-									</p>
-								</div>
+								<conversionForm.Field
+									name="unit_to"
+									validators={{ onChange: conversionSchema.shape.unit_to }}
+									children={(field) => (
+										<div className="space-y-2">
+											<Label htmlFor={field.name}>To Unit</Label>
+											<Input id={field.name} value={product.base_unit} disabled />
+											<p className="text-xs text-muted-foreground">
+												Target is always base unit
+											</p>
+										</div>
+									)}
+								/>
 							</div>
 
 							<div className="grid grid-cols-2 gap-4">

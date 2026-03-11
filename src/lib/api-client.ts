@@ -239,6 +239,7 @@ export const createConversion = createServerFn({ method: "POST" })
 		(data: {
 			productId: string;
 			unit_from: string;
+			unit_to: string;
 			factor: number;
 			precision: number;
 		}) => data,
