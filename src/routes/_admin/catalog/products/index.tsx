@@ -1,23 +1,23 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
-import { productsQueryOptions } from "@/lib/queries";
-import { Button } from "@/components/ui/button";
 import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "@/components/ui/table";
+	ArchiveIcon,
+	Delete01Icon,
+	Edit01Icon,
+	MoreHorizontal,
+	ViewIcon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { useForm } from "@tanstack/react-form";
+import {
+	useMutation,
+	useQueryClient,
+	useSuspenseQuery,
+} from "@tanstack/react-query";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { useState } from "react";
+import { toast } from "sonner";
+import { z } from "zod";
 import { Badge } from "@/components/ui/badge";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 import {
 	Dialog,
 	DialogContent,
@@ -26,17 +26,34 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
-import { MoreHorizontal, ViewIcon, Edit01Icon, ArchiveIcon, Delete01Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { toast } from "sonner";
 import { archiveProduct, deleteProduct, updateProduct } from "@/lib/api-client";
-import { useRouter } from "@tanstack/react-router";
-import { useState } from "react";
-import { useForm } from "@tanstack/react-form";
-import { z } from "zod";
+import { productsQueryOptions } from "@/lib/queries";
 import type { Product } from "@/lib/types";
 
 export const Route = createFileRoute("/_admin/catalog/products/")({
@@ -110,56 +127,65 @@ function EditProductDialog({
 						e.stopPropagation();
 						form.handleSubmit();
 					}}
-					className="space-y-4 py-4"
+					className="py-4"
 				>
-					<form.Field
-						name="name"
-						validators={{ onChange: productSchema.shape.name }}
-						children={(field) => (
-							<div className="space-y-2">
-								<Label htmlFor={field.name}>Name</Label>
-								<Input
-									id={field.name}
-									value={field.state.value}
-									onBlur={field.handleBlur}
-									onChange={(e) => field.handleChange(e.target.value)}
-								/>
-							</div>
-						)}
-					/>
-					<form.Field
-						name="description"
-						validators={{ onChange: productSchema.shape.description }}
-						children={(field) => (
-							<div className="space-y-2">
-								<Label htmlFor={field.name}>Description</Label>
-								<Textarea
-									id={field.name}
-									value={field.state.value}
-									onBlur={field.handleBlur}
-									onChange={(e) => field.handleChange(e.target.value)}
-								/>
-							</div>
-						)}
-					/>
-					<form.Field
-						name="status"
-						children={(field) => (
-							<div className="space-y-2">
-								<Label htmlFor={field.name}>Status</Label>
-								<select
-									id={field.name}
-									className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-									value={field.state.value}
-									onChange={(e) => field.handleChange(e.target.value as any)}
-								>
-									<option value="active">Active</option>
-									<option value="archived">Archived</option>
-								</select>
-							</div>
-						)}
-					/>
-					<DialogFooter>
+					<FieldGroup>
+						<form.Field
+							name="name"
+							validators={{ onChange: productSchema.shape.name }}
+							children={(field) => (
+								<Field>
+									<FieldLabel htmlFor={field.name}>Name</FieldLabel>
+									<Input
+										id={field.name}
+										value={field.state.value}
+										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
+									/>
+								</Field>
+							)}
+						/>
+						<form.Field
+							name="description"
+							validators={{ onChange: productSchema.shape.description }}
+							children={(field) => (
+								<Field>
+									<FieldLabel htmlFor={field.name}>Description</FieldLabel>
+									<Textarea
+										id={field.name}
+										value={field.state.value}
+										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
+									/>
+								</Field>
+							)}
+						/>
+						<form.Field
+							name="status"
+							children={(field) => (
+								<Field>
+									<FieldLabel htmlFor={field.name}>Status</FieldLabel>
+									<Select
+										value={field.state.value}
+										onValueChange={(value) =>
+											field.handleChange(value as "active" | "archived")
+										}
+									>
+										<SelectTrigger id={field.name}>
+											<SelectValue placeholder="Select status" />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectGroup>
+												<SelectItem value="active">Active</SelectItem>
+												<SelectItem value="archived">Archived</SelectItem>
+											</SelectGroup>
+										</SelectContent>
+									</Select>
+								</Field>
+							)}
+						/>
+					</FieldGroup>
+					<DialogFooter className="mt-6">
 						<Button
 							type="button"
 							variant="outline"
@@ -212,9 +238,7 @@ function ProductsIndexPage() {
 			<div className="flex items-center justify-between">
 				<div>
 					<h1 className="text-3xl font-bold tracking-tight">Products</h1>
-					<p className="text-muted-foreground">
-						Manage your product catalog.
-					</p>
+					<p className="text-muted-foreground">Manage your product catalog.</p>
 				</div>
 				<Link to="/catalog/products/new">
 					<Button>Create Product</Button>
@@ -247,7 +271,9 @@ function ProductsIndexPage() {
 								<TableCell>{product.base_unit}</TableCell>
 								<TableCell>
 									<Badge
-										variant={product.status === "active" ? "default" : "secondary"}
+										variant={
+											product.status === "active" ? "default" : "secondary"
+										}
 									>
 										{product.status}
 									</Badge>
