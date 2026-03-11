@@ -9,26 +9,23 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
+import { Route as AdminRouteImport } from './routes/_admin'
 import { Route as AuthRouteRouteImport } from './routes/auth/route'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
-import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settings'
-import { Route as DashboardCatalogIndexRouteImport } from './routes/dashboard/catalog/index'
+import { Route as AdminIndexRouteImport } from './routes/_admin/index'
+import { Route as AdminSettingsRouteImport } from './routes/_admin/settings'
 import { Route as AuthSignUpIndexRouteImport } from './routes/auth/sign-up/index'
 import { Route as AuthSignInIndexRouteImport } from './routes/auth/sign-in/index'
 import { Route as AuthCreateOrgIndexRouteImport } from './routes/auth/create-org/index'
-import { Route as DashboardInventoryReceiveRouteImport } from './routes/dashboard/inventory/receive'
-import { Route as DashboardCatalogProductsIndexRouteImport } from './routes/dashboard/catalog/products/index'
-import { Route as DashboardCatalogProductsNewRouteImport } from './routes/dashboard/catalog/products/new'
-import { Route as DashboardCatalogProductsProductIdRouteImport } from './routes/dashboard/catalog/products/$productId'
+import { Route as AdminInventoryReceiveRouteImport } from './routes/_admin/inventory/receive'
+import { Route as AdminCatalogProductsIndexRouteImport } from './routes/_admin/catalog/products/index'
+import { Route as AdminCatalogProductsNewRouteImport } from './routes/_admin/catalog/products/new'
 import { Route as AuthSignInTasksChooseOrganizationIndexRouteImport } from './routes/auth/sign-in/tasks/choose-organization/index'
-import { Route as DashboardInventoryVariantsVariantIdStockRouteImport } from './routes/dashboard/inventory/variants/$variantId/stock'
-import { Route as DashboardCatalogProductsProductIdVariantsNewRouteImport } from './routes/dashboard/catalog/products/$productId/variants/new'
+import { Route as AdminCatalogProductsProductIdIndexRouteImport } from './routes/_admin/catalog/products/$productId/index'
+import { Route as AdminInventoryVariantsVariantIdStockRouteImport } from './routes/_admin/inventory/variants/$variantId.stock'
+import { Route as AdminCatalogProductsProductIdVariantsNewRouteImport } from './routes/_admin/catalog/products/$productId/variants/new'
 
-const DashboardRouteRoute = DashboardRouteRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+const AdminRoute = AdminRouteImport.update({
+  id: '/_admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRouteRoute = AuthRouteRouteImport.update({
@@ -36,25 +33,15 @@ const AuthRouteRoute = AuthRouteRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
+const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AdminRoute,
 } as any)
-const DashboardIndexRoute = DashboardIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => DashboardRouteRoute,
-} as any)
-const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
-  getParentRoute: () => DashboardRouteRoute,
-} as any)
-const DashboardCatalogIndexRoute = DashboardCatalogIndexRouteImport.update({
-  id: '/catalog/',
-  path: '/catalog/',
-  getParentRoute: () => DashboardRouteRoute,
+  getParentRoute: () => AdminRoute,
 } as any)
 const AuthSignUpIndexRoute = AuthSignUpIndexRouteImport.update({
   id: '/sign-up/',
@@ -71,172 +58,155 @@ const AuthCreateOrgIndexRoute = AuthCreateOrgIndexRouteImport.update({
   path: '/create-org/',
   getParentRoute: () => AuthRouteRoute,
 } as any)
-const DashboardInventoryReceiveRoute =
-  DashboardInventoryReceiveRouteImport.update({
-    id: '/inventory/receive',
-    path: '/inventory/receive',
-    getParentRoute: () => DashboardRouteRoute,
-  } as any)
-const DashboardCatalogProductsIndexRoute =
-  DashboardCatalogProductsIndexRouteImport.update({
+const AdminInventoryReceiveRoute = AdminInventoryReceiveRouteImport.update({
+  id: '/inventory/receive',
+  path: '/inventory/receive',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCatalogProductsIndexRoute =
+  AdminCatalogProductsIndexRouteImport.update({
     id: '/catalog/products/',
     path: '/catalog/products/',
-    getParentRoute: () => DashboardRouteRoute,
+    getParentRoute: () => AdminRoute,
   } as any)
-const DashboardCatalogProductsNewRoute =
-  DashboardCatalogProductsNewRouteImport.update({
-    id: '/catalog/products/new',
-    path: '/catalog/products/new',
-    getParentRoute: () => DashboardRouteRoute,
-  } as any)
-const DashboardCatalogProductsProductIdRoute =
-  DashboardCatalogProductsProductIdRouteImport.update({
-    id: '/catalog/products/$productId',
-    path: '/catalog/products/$productId',
-    getParentRoute: () => DashboardRouteRoute,
-  } as any)
+const AdminCatalogProductsNewRoute = AdminCatalogProductsNewRouteImport.update({
+  id: '/catalog/products/new',
+  path: '/catalog/products/new',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AuthSignInTasksChooseOrganizationIndexRoute =
   AuthSignInTasksChooseOrganizationIndexRouteImport.update({
     id: '/sign-in/tasks/choose-organization/',
     path: '/sign-in/tasks/choose-organization/',
     getParentRoute: () => AuthRouteRoute,
   } as any)
-const DashboardInventoryVariantsVariantIdStockRoute =
-  DashboardInventoryVariantsVariantIdStockRouteImport.update({
+const AdminCatalogProductsProductIdIndexRoute =
+  AdminCatalogProductsProductIdIndexRouteImport.update({
+    id: '/catalog/products/$productId/',
+    path: '/catalog/products/$productId/',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminInventoryVariantsVariantIdStockRoute =
+  AdminInventoryVariantsVariantIdStockRouteImport.update({
     id: '/inventory/variants/$variantId/stock',
     path: '/inventory/variants/$variantId/stock',
-    getParentRoute: () => DashboardRouteRoute,
+    getParentRoute: () => AdminRoute,
   } as any)
-const DashboardCatalogProductsProductIdVariantsNewRoute =
-  DashboardCatalogProductsProductIdVariantsNewRouteImport.update({
-    id: '/variants/new',
-    path: '/variants/new',
-    getParentRoute: () => DashboardCatalogProductsProductIdRoute,
+const AdminCatalogProductsProductIdVariantsNewRoute =
+  AdminCatalogProductsProductIdVariantsNewRouteImport.update({
+    id: '/catalog/products/$productId/variants/new',
+    path: '/catalog/products/$productId/variants/new',
+    getParentRoute: () => AdminRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
-  '/dashboard': typeof DashboardRouteRouteWithChildren
-  '/dashboard/settings': typeof DashboardSettingsRoute
-  '/dashboard/': typeof DashboardIndexRoute
-  '/dashboard/inventory/receive': typeof DashboardInventoryReceiveRoute
+  '/settings': typeof AdminSettingsRoute
+  '/': typeof AdminIndexRoute
+  '/inventory/receive': typeof AdminInventoryReceiveRoute
   '/auth/create-org': typeof AuthCreateOrgIndexRoute
   '/auth/sign-in': typeof AuthSignInIndexRoute
   '/auth/sign-up': typeof AuthSignUpIndexRoute
-  '/dashboard/catalog': typeof DashboardCatalogIndexRoute
-  '/dashboard/catalog/products/$productId': typeof DashboardCatalogProductsProductIdRouteWithChildren
-  '/dashboard/catalog/products/new': typeof DashboardCatalogProductsNewRoute
-  '/dashboard/catalog/products': typeof DashboardCatalogProductsIndexRoute
-  '/dashboard/inventory/variants/$variantId/stock': typeof DashboardInventoryVariantsVariantIdStockRoute
+  '/catalog/products/new': typeof AdminCatalogProductsNewRoute
+  '/catalog/products': typeof AdminCatalogProductsIndexRoute
+  '/inventory/variants/$variantId/stock': typeof AdminInventoryVariantsVariantIdStockRoute
+  '/catalog/products/$productId': typeof AdminCatalogProductsProductIdIndexRoute
   '/auth/sign-in/tasks/choose-organization': typeof AuthSignInTasksChooseOrganizationIndexRoute
-  '/dashboard/catalog/products/$productId/variants/new': typeof DashboardCatalogProductsProductIdVariantsNewRoute
+  '/catalog/products/$productId/variants/new': typeof AdminCatalogProductsProductIdVariantsNewRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
-  '/dashboard/settings': typeof DashboardSettingsRoute
-  '/dashboard': typeof DashboardIndexRoute
-  '/dashboard/inventory/receive': typeof DashboardInventoryReceiveRoute
+  '/settings': typeof AdminSettingsRoute
+  '/': typeof AdminIndexRoute
+  '/inventory/receive': typeof AdminInventoryReceiveRoute
   '/auth/create-org': typeof AuthCreateOrgIndexRoute
   '/auth/sign-in': typeof AuthSignInIndexRoute
   '/auth/sign-up': typeof AuthSignUpIndexRoute
-  '/dashboard/catalog': typeof DashboardCatalogIndexRoute
-  '/dashboard/catalog/products/$productId': typeof DashboardCatalogProductsProductIdRouteWithChildren
-  '/dashboard/catalog/products/new': typeof DashboardCatalogProductsNewRoute
-  '/dashboard/catalog/products': typeof DashboardCatalogProductsIndexRoute
-  '/dashboard/inventory/variants/$variantId/stock': typeof DashboardInventoryVariantsVariantIdStockRoute
+  '/catalog/products/new': typeof AdminCatalogProductsNewRoute
+  '/catalog/products': typeof AdminCatalogProductsIndexRoute
+  '/inventory/variants/$variantId/stock': typeof AdminInventoryVariantsVariantIdStockRoute
+  '/catalog/products/$productId': typeof AdminCatalogProductsProductIdIndexRoute
   '/auth/sign-in/tasks/choose-organization': typeof AuthSignInTasksChooseOrganizationIndexRoute
-  '/dashboard/catalog/products/$productId/variants/new': typeof DashboardCatalogProductsProductIdVariantsNewRoute
+  '/catalog/products/$productId/variants/new': typeof AdminCatalogProductsProductIdVariantsNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
-  '/dashboard': typeof DashboardRouteRouteWithChildren
-  '/dashboard/settings': typeof DashboardSettingsRoute
-  '/dashboard/': typeof DashboardIndexRoute
-  '/dashboard/inventory/receive': typeof DashboardInventoryReceiveRoute
+  '/_admin': typeof AdminRouteWithChildren
+  '/_admin/settings': typeof AdminSettingsRoute
+  '/_admin/': typeof AdminIndexRoute
+  '/_admin/inventory/receive': typeof AdminInventoryReceiveRoute
   '/auth/create-org/': typeof AuthCreateOrgIndexRoute
   '/auth/sign-in/': typeof AuthSignInIndexRoute
   '/auth/sign-up/': typeof AuthSignUpIndexRoute
-  '/dashboard/catalog/': typeof DashboardCatalogIndexRoute
-  '/dashboard/catalog/products/$productId': typeof DashboardCatalogProductsProductIdRouteWithChildren
-  '/dashboard/catalog/products/new': typeof DashboardCatalogProductsNewRoute
-  '/dashboard/catalog/products/': typeof DashboardCatalogProductsIndexRoute
-  '/dashboard/inventory/variants/$variantId/stock': typeof DashboardInventoryVariantsVariantIdStockRoute
+  '/_admin/catalog/products/new': typeof AdminCatalogProductsNewRoute
+  '/_admin/catalog/products/': typeof AdminCatalogProductsIndexRoute
+  '/_admin/inventory/variants/$variantId/stock': typeof AdminInventoryVariantsVariantIdStockRoute
+  '/_admin/catalog/products/$productId/': typeof AdminCatalogProductsProductIdIndexRoute
   '/auth/sign-in/tasks/choose-organization/': typeof AuthSignInTasksChooseOrganizationIndexRoute
-  '/dashboard/catalog/products/$productId/variants/new': typeof DashboardCatalogProductsProductIdVariantsNewRoute
+  '/_admin/catalog/products/$productId/variants/new': typeof AdminCatalogProductsProductIdVariantsNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/auth'
-    | '/dashboard'
-    | '/dashboard/settings'
-    | '/dashboard/'
-    | '/dashboard/inventory/receive'
+    | '/settings'
+    | '/'
+    | '/inventory/receive'
     | '/auth/create-org'
     | '/auth/sign-in'
     | '/auth/sign-up'
-    | '/dashboard/catalog'
-    | '/dashboard/catalog/products/$productId'
-    | '/dashboard/catalog/products/new'
-    | '/dashboard/catalog/products'
-    | '/dashboard/inventory/variants/$variantId/stock'
+    | '/catalog/products/new'
+    | '/catalog/products'
+    | '/inventory/variants/$variantId/stock'
+    | '/catalog/products/$productId'
     | '/auth/sign-in/tasks/choose-organization'
-    | '/dashboard/catalog/products/$productId/variants/new'
+    | '/catalog/products/$productId/variants/new'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/auth'
-    | '/dashboard/settings'
-    | '/dashboard'
-    | '/dashboard/inventory/receive'
+    | '/settings'
+    | '/'
+    | '/inventory/receive'
     | '/auth/create-org'
     | '/auth/sign-in'
     | '/auth/sign-up'
-    | '/dashboard/catalog'
-    | '/dashboard/catalog/products/$productId'
-    | '/dashboard/catalog/products/new'
-    | '/dashboard/catalog/products'
-    | '/dashboard/inventory/variants/$variantId/stock'
+    | '/catalog/products/new'
+    | '/catalog/products'
+    | '/inventory/variants/$variantId/stock'
+    | '/catalog/products/$productId'
     | '/auth/sign-in/tasks/choose-organization'
-    | '/dashboard/catalog/products/$productId/variants/new'
+    | '/catalog/products/$productId/variants/new'
   id:
     | '__root__'
-    | '/'
     | '/auth'
-    | '/dashboard'
-    | '/dashboard/settings'
-    | '/dashboard/'
-    | '/dashboard/inventory/receive'
+    | '/_admin'
+    | '/_admin/settings'
+    | '/_admin/'
+    | '/_admin/inventory/receive'
     | '/auth/create-org/'
     | '/auth/sign-in/'
     | '/auth/sign-up/'
-    | '/dashboard/catalog/'
-    | '/dashboard/catalog/products/$productId'
-    | '/dashboard/catalog/products/new'
-    | '/dashboard/catalog/products/'
-    | '/dashboard/inventory/variants/$variantId/stock'
+    | '/_admin/catalog/products/new'
+    | '/_admin/catalog/products/'
+    | '/_admin/inventory/variants/$variantId/stock'
+    | '/_admin/catalog/products/$productId/'
     | '/auth/sign-in/tasks/choose-organization/'
-    | '/dashboard/catalog/products/$productId/variants/new'
+    | '/_admin/catalog/products/$productId/variants/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
-  DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
+  AdminRoute: typeof AdminRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteRouteImport
+    '/_admin': {
+      id: '/_admin'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -246,33 +216,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
+    '/_admin/': {
+      id: '/_admin/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
-    '/dashboard/': {
-      id: '/dashboard/'
-      path: '/'
-      fullPath: '/dashboard/'
-      preLoaderRoute: typeof DashboardIndexRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
-    '/dashboard/settings': {
-      id: '/dashboard/settings'
+    '/_admin/settings': {
+      id: '/_admin/settings'
       path: '/settings'
-      fullPath: '/dashboard/settings'
-      preLoaderRoute: typeof DashboardSettingsRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
-    '/dashboard/catalog/': {
-      id: '/dashboard/catalog/'
-      path: '/catalog'
-      fullPath: '/dashboard/catalog'
-      preLoaderRoute: typeof DashboardCatalogIndexRouteImport
-      parentRoute: typeof DashboardRouteRoute
+      fullPath: '/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/auth/sign-up/': {
       id: '/auth/sign-up/'
@@ -295,33 +251,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthCreateOrgIndexRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/dashboard/inventory/receive': {
-      id: '/dashboard/inventory/receive'
+    '/_admin/inventory/receive': {
+      id: '/_admin/inventory/receive'
       path: '/inventory/receive'
-      fullPath: '/dashboard/inventory/receive'
-      preLoaderRoute: typeof DashboardInventoryReceiveRouteImport
-      parentRoute: typeof DashboardRouteRoute
+      fullPath: '/inventory/receive'
+      preLoaderRoute: typeof AdminInventoryReceiveRouteImport
+      parentRoute: typeof AdminRoute
     }
-    '/dashboard/catalog/products/': {
-      id: '/dashboard/catalog/products/'
+    '/_admin/catalog/products/': {
+      id: '/_admin/catalog/products/'
       path: '/catalog/products'
-      fullPath: '/dashboard/catalog/products'
-      preLoaderRoute: typeof DashboardCatalogProductsIndexRouteImport
-      parentRoute: typeof DashboardRouteRoute
+      fullPath: '/catalog/products'
+      preLoaderRoute: typeof AdminCatalogProductsIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
-    '/dashboard/catalog/products/new': {
-      id: '/dashboard/catalog/products/new'
+    '/_admin/catalog/products/new': {
+      id: '/_admin/catalog/products/new'
       path: '/catalog/products/new'
-      fullPath: '/dashboard/catalog/products/new'
-      preLoaderRoute: typeof DashboardCatalogProductsNewRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
-    '/dashboard/catalog/products/$productId': {
-      id: '/dashboard/catalog/products/$productId'
-      path: '/catalog/products/$productId'
-      fullPath: '/dashboard/catalog/products/$productId'
-      preLoaderRoute: typeof DashboardCatalogProductsProductIdRouteImport
-      parentRoute: typeof DashboardRouteRoute
+      fullPath: '/catalog/products/new'
+      preLoaderRoute: typeof AdminCatalogProductsNewRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/auth/sign-in/tasks/choose-organization/': {
       id: '/auth/sign-in/tasks/choose-organization/'
@@ -330,19 +279,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignInTasksChooseOrganizationIndexRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/dashboard/inventory/variants/$variantId/stock': {
-      id: '/dashboard/inventory/variants/$variantId/stock'
-      path: '/inventory/variants/$variantId/stock'
-      fullPath: '/dashboard/inventory/variants/$variantId/stock'
-      preLoaderRoute: typeof DashboardInventoryVariantsVariantIdStockRouteImport
-      parentRoute: typeof DashboardRouteRoute
+    '/_admin/catalog/products/$productId/': {
+      id: '/_admin/catalog/products/$productId/'
+      path: '/catalog/products/$productId'
+      fullPath: '/catalog/products/$productId'
+      preLoaderRoute: typeof AdminCatalogProductsProductIdIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
-    '/dashboard/catalog/products/$productId/variants/new': {
-      id: '/dashboard/catalog/products/$productId/variants/new'
-      path: '/variants/new'
-      fullPath: '/dashboard/catalog/products/$productId/variants/new'
-      preLoaderRoute: typeof DashboardCatalogProductsProductIdVariantsNewRouteImport
-      parentRoute: typeof DashboardCatalogProductsProductIdRoute
+    '/_admin/inventory/variants/$variantId/stock': {
+      id: '/_admin/inventory/variants/$variantId/stock'
+      path: '/inventory/variants/$variantId/stock'
+      fullPath: '/inventory/variants/$variantId/stock'
+      preLoaderRoute: typeof AdminInventoryVariantsVariantIdStockRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/catalog/products/$productId/variants/new': {
+      id: '/_admin/catalog/products/$productId/variants/new'
+      path: '/catalog/products/$productId/variants/new'
+      fullPath: '/catalog/products/$productId/variants/new'
+      preLoaderRoute: typeof AdminCatalogProductsProductIdVariantsNewRouteImport
+      parentRoute: typeof AdminRoute
     }
   }
 }
@@ -366,53 +322,36 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
   AuthRouteRouteChildren,
 )
 
-interface DashboardCatalogProductsProductIdRouteChildren {
-  DashboardCatalogProductsProductIdVariantsNewRoute: typeof DashboardCatalogProductsProductIdVariantsNewRoute
+interface AdminRouteChildren {
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminInventoryReceiveRoute: typeof AdminInventoryReceiveRoute
+  AdminCatalogProductsNewRoute: typeof AdminCatalogProductsNewRoute
+  AdminCatalogProductsIndexRoute: typeof AdminCatalogProductsIndexRoute
+  AdminInventoryVariantsVariantIdStockRoute: typeof AdminInventoryVariantsVariantIdStockRoute
+  AdminCatalogProductsProductIdIndexRoute: typeof AdminCatalogProductsProductIdIndexRoute
+  AdminCatalogProductsProductIdVariantsNewRoute: typeof AdminCatalogProductsProductIdVariantsNewRoute
 }
 
-const DashboardCatalogProductsProductIdRouteChildren: DashboardCatalogProductsProductIdRouteChildren =
-  {
-    DashboardCatalogProductsProductIdVariantsNewRoute:
-      DashboardCatalogProductsProductIdVariantsNewRoute,
-  }
-
-const DashboardCatalogProductsProductIdRouteWithChildren =
-  DashboardCatalogProductsProductIdRoute._addFileChildren(
-    DashboardCatalogProductsProductIdRouteChildren,
-  )
-
-interface DashboardRouteRouteChildren {
-  DashboardSettingsRoute: typeof DashboardSettingsRoute
-  DashboardIndexRoute: typeof DashboardIndexRoute
-  DashboardInventoryReceiveRoute: typeof DashboardInventoryReceiveRoute
-  DashboardCatalogIndexRoute: typeof DashboardCatalogIndexRoute
-  DashboardCatalogProductsProductIdRoute: typeof DashboardCatalogProductsProductIdRouteWithChildren
-  DashboardCatalogProductsNewRoute: typeof DashboardCatalogProductsNewRoute
-  DashboardCatalogProductsIndexRoute: typeof DashboardCatalogProductsIndexRoute
-  DashboardInventoryVariantsVariantIdStockRoute: typeof DashboardInventoryVariantsVariantIdStockRoute
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminIndexRoute: AdminIndexRoute,
+  AdminInventoryReceiveRoute: AdminInventoryReceiveRoute,
+  AdminCatalogProductsNewRoute: AdminCatalogProductsNewRoute,
+  AdminCatalogProductsIndexRoute: AdminCatalogProductsIndexRoute,
+  AdminInventoryVariantsVariantIdStockRoute:
+    AdminInventoryVariantsVariantIdStockRoute,
+  AdminCatalogProductsProductIdIndexRoute:
+    AdminCatalogProductsProductIdIndexRoute,
+  AdminCatalogProductsProductIdVariantsNewRoute:
+    AdminCatalogProductsProductIdVariantsNewRoute,
 }
 
-const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
-  DashboardSettingsRoute: DashboardSettingsRoute,
-  DashboardIndexRoute: DashboardIndexRoute,
-  DashboardInventoryReceiveRoute: DashboardInventoryReceiveRoute,
-  DashboardCatalogIndexRoute: DashboardCatalogIndexRoute,
-  DashboardCatalogProductsProductIdRoute:
-    DashboardCatalogProductsProductIdRouteWithChildren,
-  DashboardCatalogProductsNewRoute: DashboardCatalogProductsNewRoute,
-  DashboardCatalogProductsIndexRoute: DashboardCatalogProductsIndexRoute,
-  DashboardInventoryVariantsVariantIdStockRoute:
-    DashboardInventoryVariantsVariantIdStockRoute,
-}
-
-const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
-  DashboardRouteRouteChildren,
-)
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
-  DashboardRouteRoute: DashboardRouteRouteWithChildren,
+  AdminRoute: AdminRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

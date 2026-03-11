@@ -8,15 +8,15 @@ import type { IconSvgElement } from "@hugeicons/react";
 import { useRouterState } from "@tanstack/react-router";
 import type { FileRouteTypes } from "@/routeTree.gen";
 
-type DashboardRoute =
-	| "/dashboard"
-	| Extract<FileRouteTypes["to"], `/dashboard/${string}`>;
+type AdminRoute =
+	| "/"
+	| Extract<FileRouteTypes["to"], `/${string}`>;
 
 export type SidebarNavItem =
 	| {
 			kind: "item";
 			title: string;
-			url: DashboardRoute;
+			url: AdminRoute;
 			icon: IconSvgElement;
 			isActive: boolean;
 	  }
@@ -28,36 +28,36 @@ type SidebarNavItemConfig =
 	| {
 			kind: "item";
 			title: string;
-			url: DashboardRoute;
+			url: AdminRoute;
 			icon: IconSvgElement;
 	  }
 	| {
 			kind: "hidden";
 	  };
 
-export const dashboardNavConfig: Record<string, SidebarNavItemConfig> = {
-	"/dashboard": {
+export const adminNavConfig: Record<string, SidebarNavItemConfig> = {
+	"/": {
 		kind: "item",
-		title: "Overview",
-		url: "/dashboard",
+		title: "Dashboard",
+		url: "/",
 		icon: HomeIcon,
 	},
-	"/dashboard/catalog/products": {
+	"/catalog/products": {
 		kind: "item",
 		title: "Products",
-		url: "/dashboard/catalog/products",
+		url: "/catalog/products",
 		icon: Box,
 	},
-	"/dashboard/inventory/receive": {
+	"/inventory/receive": {
 		kind: "item",
 		title: "Receive Stock",
-		url: "/dashboard/inventory/receive",
+		url: "/inventory/receive",
 		icon: PackageReceiveIcon,
 	},
-	"/dashboard/settings": {
+	"/settings": {
 		kind: "item",
 		title: "Settings",
-		url: "/dashboard/settings",
+		url: "/settings",
 		icon: Settings01Icon,
 	},
 };
@@ -68,13 +68,13 @@ export function useSidebarItems(): Array<SidebarNavItem> {
 	});
 
 	return (
-		Object.entries(dashboardNavConfig) as Array<
-			[DashboardRoute, SidebarNavItemConfig]
+		Object.entries(adminNavConfig) as Array<
+			[AdminRoute, SidebarNavItemConfig]
 		>
 	)
 		.filter(([_, x]) => x.kind === "item")
 		.map(([route, item]) => ({
 			...item,
-			isActive: location === route || location.startsWith(`${route}/`),
+			isActive: location === route || location.startsWith(route === "/" ? "/_never_match" : route),
 		}));
 }
