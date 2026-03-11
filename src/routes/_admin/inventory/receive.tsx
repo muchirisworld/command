@@ -16,7 +16,11 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { receiveInventory } from "@/lib/api-client";
-import { productsQueryOptions, variantsQueryOptions } from "@/lib/queries";
+import {
+	conversionsQueryOptions,
+	productsQueryOptions,
+	variantsQueryOptions,
+} from "@/lib/queries";
 
 export const Route = createFileRoute("/_admin/inventory/receive")({
 	component: ReceiveInventoryPage,
@@ -40,6 +44,17 @@ function ReceiveInventoryPage() {
 		...variantsQueryOptions(selectedProductId),
 		enabled: !!selectedProductId,
 	});
+	const { data: conversions } = useQuery({
+		...conversionsQueryOptions(selectedProductId),
+		enabled: !!selectedProductId,
+	});
+
+	const product = products?.find((p) => p.id === selectedProductId);
+
+	// Available units: base unit + conversions
+	const availableUnits = product
+		? [product.base_unit, ...(conversions?.map((c) => c.unit_from) || [])]
+		: [];
 
 	const mutation = useMutation({
 		mutationFn: async (data: z.infer<typeof receiptSchema>) => {
@@ -167,12 +182,12 @@ function ReceiveInventoryPage() {
 										}
 									/>
 									{field.state.meta.errors.length > 0 &&
-									field.state.meta.isTouched
+										field.state.meta.isTouched
 										? field.state.meta.errors.map((e, idx) => (
-												<p key={idx} className="text-xs text-destructive">
-													{e?.message}
-												</p>
-											))
+											<p key={idx} className="text-xs text-destructive">
+												{e?.message}
+											</p>
+										))
 										: null}
 								</div>
 							)}
@@ -184,26 +199,56 @@ function ReceiveInventoryPage() {
 							children={(field) => (
 								<div className="space-y-2">
 									<Label htmlFor={field.name}>Unit</Label>
-									<Input
-										id={field.name}
-										disabled={!selectedVariantId}
+									<Select
 										value={field.state.value}
-										onBlur={field.handleBlur}
-										onChange={(e) => field.handleChange(e.target.value)}
-										placeholder="e.g. EA, BOX"
-									/>
+										onValueChange={(val) => field.handleChange(val ?? "")}
+										disabled={!selectedVariantId}
+									>
+										<SelectTrigger id={field.name}>
+											<SelectValue placeholder="Select unit" />
+										</SelectTrigger>
+										<SelectContent>
+											{availableUnits.map((u) => (
+												<SelectItem key={u} value={u}>
+													{u}
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
 									{field.state.meta.errors.length > 0 &&
-									field.state.meta.isTouched
+										field.state.meta.isTouched
 										? field.state.meta.errors.map((e, idx) => (
-												<p key={idx} className="text-xs text-destructive">
-													{e?.message}
-												</p>
-											))
+											<p key={idx} className="text-xs text-destructive">
+												{e?.message}
+											</p>
+										))
 										: null}
 								</div>
 							)}
 						/>
 					</div>
+
+					{form.state.values.quantity > 0 && form.state.values.unit && (
+						<div className="p-4 bg-muted/50 rounded-md border border-dashed text-sm">
+							<p className="font-medium text-muted-foreground flex justify-between">
+								<span>Conversion Preview:</span>
+								<span className="text-foreground">
+									{(() => {
+										const qty = form.state.values.quantity;
+										const unit = form.state.values.unit;
+										if (unit === product?.base_unit)
+											return `${qty} ${product.base_unit}`;
+
+										const conv = conversions?.find((c) => c.unit_from === unit);
+										if (!conv) return `${qty} ${unit} (No conversion found)`;
+
+										const baseQty = qty * conv.factor;
+										return `${qty} ${unit} × ${conv.factor} = ${baseQty} ${product?.base_unit}`;
+									})()}
+								</span>
+							</p>
+						</div>
+					)}
 
 					<form.Field
 						name="note"
@@ -220,12 +265,12 @@ function ReceiveInventoryPage() {
 									placeholder="e.g. PO-12345"
 								/>
 								{field.state.meta.errors.length > 0 &&
-								field.state.meta.isTouched
+									field.state.meta.isTouched
 									? field.state.meta.errors.map((e, idx) => (
-											<p key={idx} className="text-xs text-destructive">
-												{e?.message}
-											</p>
-										))
+										<p key={idx} className="text-xs text-destructive">
+											{e?.message}
+										</p>
+									))
 									: null}
 							</div>
 						)}
